@@ -34,7 +34,7 @@ orders_router.post('/item/create', (req, res) => {
         item_name: req.body.item_name,
         item_qty:req.body.item_qty,
         item_sharedby:req.body.item_sharedby,
-        data:Date.now()
+        date:Date.now()
     }
     console.log("new_item: ",new_item);
 
