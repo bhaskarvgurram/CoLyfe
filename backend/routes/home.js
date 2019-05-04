@@ -15,17 +15,10 @@ home_router.get('/', async (req, res) => {
 // creates a new home
 home_router.post('/', async (req, res) => {
 
-    let person_name = req.body.name;
-    let person_email = req.body.email;
+    let persons = req.body.persons;
+    console.log('Persons ', persons);
     let home_name = req.body.home;
 
-    let person = await new Person({
-        name: person_name,
-        email: person_email
-    });
-
-    await person.save();
-    console.log('Person created ', person.name);
     let passcode = '';
 
     for (var i = 0; i < 6; i++) {
@@ -35,16 +28,28 @@ home_router.post('/', async (req, res) => {
     console.log('Pass code ', passcode);
     let home = await new Home({
         name: home_name,
-        passcode: passcode,
-        createdBy: person.id
+        passcode: passcode
     })
 
     await home.save();
     console.log('Created home successfully');
 
-    res.status(200).send('Success');
-});
+    for (var i = 0; i < persons.length; i++) {
+        console.log('Adding person ', persons[i].name, ' ', persons[i].email);
+        let person = await new Person({
+            name: persons[i].name,
+            email: persons[i].email,
+            house_id: home.id
+        });
+        await person.save();
 
+        console.log('Person created ', person.name);
+    }
+    res.status(200).send({
+        "message": "Success",
+        "home_id": home.id
+    });
+});
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
