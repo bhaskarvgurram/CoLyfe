@@ -38,9 +38,28 @@ class AddList extends Component {
         _id: "5"
       }
     ],
-    list: [{ listName: "" }, [{ name: "" }, { quantity: "" }, { people: [] }]],
+    items: [
+      {
+        name: "",
+        quantity: 0,
+        people: []
+      }
+    ],
+    title: "",
+    // list: [{ listName: "" }, [{ name: "" }, { quantity: "" }, { people: [] }]],
     visible: false
   };
+
+  // data = {
+  //   title: "",
+  //   items: [
+  //     {
+  //       name: "",
+  //       quantity: 0,
+  //       people: []
+  //     }
+  //   ]
+  // }
 
   showModal = () => {
     this.setState({
@@ -49,14 +68,13 @@ class AddList extends Component {
   };
 
   handleOk = e => {
-    console.log(e);
+    const { items, title } = this.state;
     this.setState({
       visible: false
     });
   };
 
   handleCancel = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
@@ -64,42 +82,55 @@ class AddList extends Component {
 
   handleChange = (e, i) => {
     // e.persist();
-    console.log(e);
-    const { list } = this.state;
-    list[i][e.target.name] = e.target.value;
+    const { items } = this.state;
+    items[i][e.target.name] = e.target.value;
     this.setState({
-      list
+      items
     });
   };
 
   handleRemove = i => {
-    const { list } = this.state;
-    list.splice(i, 1);
+    const { items } = this.state;
+    items.splice(i, 1);
     this.setState({
-      list
+      items
     });
   };
 
   handleAddItem = () => {
-    // const { addItem } = this.state;
-    // const newAddItem = {
-    //   name: "",
-    //   quntity: "",
-    //   people: []
-    // };
-    // addItem.push(newAddItem);
-    // this.setState({
-    //   addItem
-    // });
+    let { items } = this.state;
+    const newAddItem = {
+      name: "",
+      quntity: 0,
+      people: []
+    };
+    items.push(newAddItem);
+    this.setState({
+      items
+    });
   };
 
-  handleSelectChange = name => {
+  handleSelectChange = (name, i) => {
     // const id = parseInt(name);
     // console.log(id);
+    const { items, people } = this.state;
+    const selectedIds = [];
+    people.forEach(p => {
+      if (name.indexOf(p.name) !== -1) selectedIds.push(p._id)
+    })
+    items[i]["people"] = selectedIds;
+    this.setState({
+      items
+    })
   };
 
+  handlTitleChange = (e) => {
+    this.setState({
+      title: e.target.value
+    })
+  }
   render() {
-    const { list, people } = this.state;
+    const { items, people } = this.state;
 
     return (
       <Row>
@@ -133,15 +164,16 @@ class AddList extends Component {
             <Input
               placeholder="List Title"
               style={{ marginBottom: "15px" }}
-              value={list.listName}
+              // value={list.listName}]
+              onChange={this.handlTitleChange}
             />
-            {list.map((item, i) => (
+            {items.map((item, i) => (
               <div style={{ marginTop: "10px" }} key={i}>
                 <Row>
                   <Col span={15}>
                     <Input
                       prefix={<Icon type="shopping" />}
-                      value={list[i].name}
+                      value={items[i].name}
                       name="name"
                       onChange={e => this.handleChange(e, i)}
                       placeholder="name"
@@ -152,7 +184,7 @@ class AddList extends Component {
                   <Col span={4}>
                     <Input
                       prefix={<Icon type="shopping-cart" />}
-                      value={list[i].quantity}
+                      value={items[i].quantity}
                       name="quantity"
                       onChange={e => this.handleChange(e, i)}
                       placeholder="quantity"
@@ -179,7 +211,7 @@ class AddList extends Component {
                       mode="multiple"
                       style={{ width: "100%" }}
                       placeholder="add people"
-                      onChange={this.handleSelectChange}
+                      onChange={(name) => this.handleSelectChange(name, i)}
                     >
                       {people.map(p => (
                         <Option key={p.name}>{p.name}</Option>
