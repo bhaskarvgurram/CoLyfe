@@ -10,7 +10,6 @@ const _ = require('lodash');
 task_router.get('/all', async (req, res) => {
     console.log('Ing get ');
 
-
     // get daily, weekly and monthly tasks, and their info
 
 

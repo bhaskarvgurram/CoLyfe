@@ -5,7 +5,7 @@ const PersonSchema = new Schema({
     name: String,
     email: String,
     house_id: { type: Schema.Types.ObjectId, ref: 'Home' },
-    taskHistory: [String],
+    taskHistory: Object,
 }, { timestamps: true });
 
 module.exports = mongoose.model("Person", PersonSchema);

@@ -17,19 +17,15 @@ home_router.post('/', async (req, res) => {
 
     let persons = req.body.persons;
     console.log('Persons ', persons);
-    let home_name = req.body.home;
+    let home_name = req.body.home_name;
 
-    let passcode = '';
-
-    for (var i = 0; i < 6; i++) {
-        passcode = passcode + toString(getRandomInt(10));
-    };
+    let passcode = 'H' + getRandomInt(10000).toString();
 
     console.log('Pass code ', passcode);
     let home = await new Home({
         name: home_name,
         passcode: passcode
-    })
+    });
 
     await home.save();
     console.log('Created home successfully');
@@ -41,6 +37,14 @@ home_router.post('/', async (req, res) => {
             email: persons[i].email,
             house_id: home.id
         });
+        let update = {}
+        // add a key of task id in the task History, the value will store the completion count for the task
+        update['weeklyCount'] = 0;
+        update['dailyCount'] = 0;
+        update['monthlyCount'] = 0;
+        taskHistory = Object.assign({}, taskHistory, update);
+        person.taskHistory = taskHistory;
+
         await person.save();
 
         console.log('Person created ', person.name);
