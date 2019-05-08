@@ -11,6 +11,23 @@ home_router.get('/', async (req, res) => {
     res.send('Success');
 });
 
+//get all people in a home
+
+home_router.get('/people', (req, res)=>{
+    console.log("req.query ", req.query);
+    Person.find({
+        house_id:req.query.house_id
+    })
+    .then(row=>{
+        console.log("data deleted", row);
+            res.status(200).send(row);
+    })
+    .catch(err=>{
+        console.log("error in query", err);
+    res.status(400);
+    })
+})
+
 
 // creates a new home
 home_router.post('/', async (req, res) => {
@@ -18,17 +35,21 @@ home_router.post('/', async (req, res) => {
     let persons = req.body.persons;
     console.log('Persons ', persons);
     let home_name = req.body.home_name;
+    let account_name = req.body.account_name
 
     let passcode = 'H' + getRandomInt(10000).toString();
 
     console.log('Pass code ', passcode);
     let home = await new Home({
         name: home_name,
-        passcode: passcode
+        passcode: passcode,
+        account_name: account_name
     });
 
     await home.save();
     console.log('Created home successfully');
+    let person_data = [];
+
 
     for (var i = 0; i < persons.length; i++) {
         console.log('Adding person ', persons[i].name, ' ', persons[i].email);
@@ -42,8 +63,12 @@ home_router.post('/', async (req, res) => {
         update['weeklyCount'] = 0;
         update['dailyCount'] = 0;
         update['monthlyCount'] = 0;
-        taskHistory = Object.assign({}, taskHistory, update);
-        person.taskHistory = taskHistory;
+        // taskHistory = Object.assign({}, taskHistory, update);
+        person.taskHistory = update;
+        person_data.push({
+            name: person.name,
+            id: person.id
+        });
 
         await person.save();
 
@@ -51,7 +76,8 @@ home_router.post('/', async (req, res) => {
     }
     res.status(200).send({
         "message": "Success",
-        "home_id": home.id
+        "homeId": home.id,
+        "personData": person_data
     });
 });
 

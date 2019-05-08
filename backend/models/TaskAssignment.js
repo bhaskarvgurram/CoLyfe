@@ -9,6 +9,7 @@ const TaskAssignmentSchema = new Schema({
     rotationType: String,
     done: { type: Boolean, default: false },
     deadline: Date,
+    homeId: { type: Schema.Types.ObjectId, ref: 'Home', required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model("TaskAssignment", TaskAssignmentSchema);
