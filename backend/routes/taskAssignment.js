@@ -30,7 +30,7 @@ task_assignment_router.post('/mark_complete', async (req, res) => {
 
 
 task_assignment_router.get('/all', async (req, res) => {
-    let homeId = req.body.homeId;
+    let homeId = req.query.homeId;
     // Get all daily incomplete tasks
     console.log('In get all assignments');
     let daily_task_assignments = await TaskAssignment.find({
@@ -50,7 +50,7 @@ task_assignment_router.get('/all', async (req, res) => {
 
 task_assignment_router.get('/daily', async (req, res) => {
     // Get all daily incomplete tasks
-    let homeId = req.body.homeId;
+    let homeId = req.query.homeId;
     console.log('In get daily assignments');
     let daily_task_assignments = await TaskAssignment.find({
         homeId: homeId,
@@ -68,7 +68,7 @@ task_assignment_router.get('/daily', async (req, res) => {
 });
 
 task_assignment_router.get('/weekly', async (req, res) => {
-    let homeId = req.body.homeId;
+    let homeId = req.query.homeId;
     // Get all daily incomplete tasks
     console.log('In get weekly task assignment');
     let weekly_task_assignments = await TaskAssignment.find({
@@ -89,7 +89,7 @@ task_assignment_router.get('/weekly', async (req, res) => {
 
 
 task_assignment_router.get('/monthly', async (req, res) => {
-    let homeId = req.body.homeId;
+    let homeId = req.query.homeId;
     // Get all daily incomplete tasks
     console.log('In get weekly');
     let monthly_task_assignments = await TaskAssignment.find({

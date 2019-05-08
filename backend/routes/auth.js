@@ -47,33 +47,6 @@ auth_router.post('/', async (req, res) => {
 
     console.log('Persons data ', persons_data);
 
-
-    // let persons = home.p
-    // let person_data = [];
-
-    // for (var i = 0; i < persons.length; i++) {
-    //     console.log('Adding person ', persons[i].name, ' ', persons[i].email);
-    //     let person = await new Person({
-    //         name: persons[i].name,
-    //         email: persons[i].email,
-    //         house_id: home.id
-    //     });
-    //     let update = {}
-    //     // add a key of task id in the task History, the value will store the completion count for the task
-    //     update['weeklyCount'] = 0;
-    //     update['dailyCount'] = 0;
-    //     update['monthlyCount'] = 0;
-    //     // taskHistory = Object.assign({}, taskHistory, update);
-    //     person.taskHistory = update;
-    //     person_data.push({
-    //         name: person.name,
-    //         id: person.id
-    //     });
-
-    //     await person.save();
-
-    //     console.log('Person created ', person.name);
-    // }
     res.status(200).send({
         "message": "Success",
         "homeId": home.id,
