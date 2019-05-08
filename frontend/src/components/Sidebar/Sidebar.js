@@ -21,7 +21,7 @@ class Sidebar extends React.Component {
   componentDidMount() {
     if(!localStorage.getItem("homeId")) {
       message.error("Please login!")
-      // this.props.history.push("/login")
+      this.props.history.push("/login")
     }
     
   }
