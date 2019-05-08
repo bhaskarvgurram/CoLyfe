@@ -56,64 +56,15 @@ class AddList extends Component {
     // list: [{ listName: "" }, [{ name: "" }, { quantity: "" }, { people: [] }]],
     visible: false,
     editItemVisible: false,
+    addItemVisible: false,
     list: []
-    // list: [
-    //   {
-    //     list_: "",
-    //     listId: "",
-    //     item: [
-
-    //     ]
-    //   }
-    // ],
-    // list: [
-    //   {
-    //     listName: "list 5",
-    //     listId: 1,
-    //     item: [
-    //       {
-    //         itemId: 11,
-    //         name: "mango",
-    //         quantity: 20,
-    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
-    //       },
-    //       {
-    //         itemId: 12,
-
-    //         name: "apple",
-    //         quantity: 20,
-    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     listName: "list 7",
-    //     listId: "2",
-    //     item: [
-    //       {
-    //         itemId: 13,
-
-    //         name: "orange",
-    //         quantity: 20,
-    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
-    //       },
-    //       {
-    //         itemId: 14,
-
-    //         name: "chikku",
-    //         quantity: 20,
-    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
-    //       }
-    //     ]
-    //   }
-    // ]
   };
 
   componentDidMount() {
     let home_id = "5ccd0f8ed0879970a0d4615a";
 
     axios
-      .get(`http://172.20.10.13:5000/list/display/${home_id}`)
+      .get(`/list/display/${home_id}`)
       .then(res => {
         if (res.status === 200) {
           console.log("get response data ", res.data);
@@ -127,17 +78,6 @@ class AddList extends Component {
       });
   }
 
-  // data = {
-  //   title: "",
-  //   items: [
-  //     {
-  //       name: "",
-  //       quantity: 0,
-  //       people: []
-  //     }
-  //   ]
-  // }
-
   showModal = () => {
     this.setState({
       visible: true
@@ -146,15 +86,19 @@ class AddList extends Component {
 
   editItemVisibleModal = item => {
     const { list } = this.state;
-    // console.log(id);
-    // console.log(itemId);
 
     this.setState({
       editItemVisible: true,
       activeItem: item
     });
-    // console.log("inside");
-    // console.log(this.state.activeItemId);
+  };
+
+  addItemVisibleModal = listId => {
+    console.log("active list ", listId);
+    this.setState({
+      addItemVisible: true,
+      activeListId: listId
+    });
   };
 
   handleOk = e => {
@@ -172,7 +116,7 @@ class AddList extends Component {
     console.log(data);
 
     axios
-      .post("http://172.20.10.13:5000/list/create", data)
+      .post("/list/create", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -187,7 +131,8 @@ class AddList extends Component {
   handleCancel = e => {
     this.setState({
       visible: false,
-      editItemVisible: false
+      editItemVisible: false,
+      addItemVisible: false
     });
   };
 
@@ -252,7 +197,7 @@ class AddList extends Component {
     };
 
     axios
-      .post("http://172.20.10.13:5000/list/delete", data)
+      .post("/list/delete", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -271,7 +216,7 @@ class AddList extends Component {
     };
 
     axios
-      .post("http://172.20.10.13:5000/list/item/delete", data)
+      .post("/list/item/delete", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -290,7 +235,7 @@ class AddList extends Component {
     console.log("final edit ", data);
 
     axios
-      .post("http://172.20.10.13:5000/list/item/edit", data)
+      .post("/list/item/edit", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -307,7 +252,24 @@ class AddList extends Component {
   };
 
   handleEditSelectChange = name => {
-    console.log(name);
+    console.log(">>> ", name);
+    // this.setState(prev => {
+    //   let active = prev.activeItem;
+    //   active.item_sharedby = name;
+    //   return {
+    //     activeItem: active
+    //   };
+    // });
+
+    // const { item_sharedby, order_details } = this.state;
+    // const selectedIds = [];
+    // item_sharedby.forEach((p, i) => {
+    //   if (name.indexOf(p.name) !== -1) selectedIds.push({ user_name: p.name });
+    // });
+    // order_details["item_sharedby"] = selectedIds;
+    // this.setState({
+    //   order_details
+    // });
   };
 
   edithandleChange = e => {
@@ -318,6 +280,35 @@ class AddList extends Component {
       activeItem
     });
     // console.log("final edit ", this.state.activeItem);
+  };
+
+  addItem = e => {
+    let item = this.state.activeItem;
+    console.log("final add item ", item);
+    // console.log("final add list id ", this.state.activeListId);
+    let list_id = this.state.activeListId;
+    let data = {
+      list_id,
+      ...item
+    };
+    console.log("final add item ", data);
+
+    axios
+      .post("/list/item/add", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+
+          this.componentDidMount();
+          this.setState({
+            addItemVisible: false,
+            activeItem: {}
+          });
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
   };
 
   render() {
@@ -497,10 +488,11 @@ class AddList extends Component {
                       )}
                     />
                   </Table>
+
                   <Button
                     style={{ float: "left", margin: "5px" }}
                     onClick={this.showModal}
-                    onClick={() => this.editItemVisibleModal()}
+                    onClick={() => this.addItemVisibleModal(v._id)}
                   >
                     <Icon type="plus" />
                     Add Item
@@ -525,11 +517,52 @@ class AddList extends Component {
               name="item_name"
               value={activeItem.item_name}
               onChange={e => this.edithandleChange(e)}
+              placeholder="name"
             />
             <Input
               name="item_qty"
               value={activeItem.item_qty}
               onChange={e => this.edithandleChange(e)}
+              placeholder="quantity"
+            />
+            <Select
+              style={{ width: "100%" }}
+              mode="multiple"
+              defaultValue={
+                activeItem.item_sharedby
+                  ? activeItem.item_sharedby.map(member => member.user_name)
+                  : []
+              }
+              onChange={this.handleEditSelectChange}
+            >
+              {item_sharedby.map(p => (
+                <Option value={p.name}>{p.name}</Option>
+              ))}
+            </Select>
+          </Row>
+        </Modal>
+
+        <Modal
+          className="addItemModal"
+          title="Add Item"
+          visible={this.state.addItemVisible}
+          onOk={() => this.addItem()}
+          onCancel={this.handleCancel}
+          style={{ height: "500px !important" }}
+          width="700px"
+        >
+          <Row>
+            <Input
+              name="item_name"
+              value={activeItem.item_name}
+              onChange={e => this.edithandleChange(e)}
+              placeholder="name"
+            />
+            <Input
+              name="item_qty"
+              value={activeItem.item_qty}
+              onChange={e => this.edithandleChange(e)}
+              placeholder="quantity"
             />
             <Select
               style={{ width: "100%" }}
