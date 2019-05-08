@@ -39,7 +39,7 @@ task_router.post('/create', async (req, res) => {
 
     if (startDate === "NOW") {
         startDate = new Date();
-
+        assignTasks(task);
         // create Task assignments now
     }
 
@@ -72,7 +72,6 @@ task_router.post('/create', async (req, res) => {
         task_person.save();
     }
 
-    assignTasks(task);
 
     res.status(200).send('Success');
 });
