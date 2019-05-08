@@ -26,6 +26,7 @@ task_router.post('/create', async (req, res) => {
     let rotation_type = req.body.rotation_type; // DAILY, WEEKLY, MONTHLY
     let homeId = req.body.homeId;
     let startDate = req.body.startDate;
+    let start_date = null;
     console.log(req.body);
     // rotation
     let rotation_day = null;
@@ -38,7 +39,7 @@ task_router.post('/create', async (req, res) => {
     }
 
     if (startDate.toUpperCase() === "NOW") {
-        startDate = new Date();
+        start_date = new Date();
         // create Task assignments now
     }
 
@@ -48,7 +49,7 @@ task_router.post('/create', async (req, res) => {
         rotationType: rotation_type,
         rotation_day: rotation_day,
         people: person_ids,
-        start: startDate,
+        start: start_date,
     });
 
 
