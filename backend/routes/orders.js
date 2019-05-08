@@ -60,6 +60,11 @@ orders_router.post('/item/add', (req, res) => {
 orders_router.post('/create', (req, res) => {
     console.log('req.body ', req.body); //home_id, list_id
 
+//     { home_id: '5ccd0f8ed0879970a0d4615a',
+//   list_title: 'list 101',
+//   order_details:
+//    [ { item_name: 'apple', item_qty: '10', item_sharedby: [Array] } ] }
+
     for(let i=0; i<req.body.order_details.length; i++){
         req.body.order_details[i].date=Date.now();
     }
@@ -78,11 +83,11 @@ orders_router.post('/create', (req, res) => {
 
 //displays all lists where home_id=home_id
 
-orders_router.post('/display', (req, res) => {
-    console.log('req.body ', req.body); //home_id, list_id
+orders_router.get('/display/:home_id', (req, res) => {
+    console.log('req.body ', req.params); //home_id, list_id
 //req.query
    Orders.find({
-       home_id:req.body.home_id
+       home_id:req.params.home_id
    })
     .then(row=>{
         console.log("data response", row);
@@ -97,18 +102,18 @@ orders_router.post('/display', (req, res) => {
 //edit a list item
 
 orders_router.post('/item/edit', (req, res) => {
-    console.log('req.body ', req.body); //home_id, list_id
+    console.log('req.body ', req.body); //home_id, list_id, _id is item_id
 
     Orders.findOne({
-        "order_details._id":req.body.item_id
+        "order_details._id":req.body._id
     })
     .then(row=>{
         console.log("data fetched1: ", row);
         console.log("length ",row.order_details.length);
 
         for(let i=0; i< row.order_details.length; i++){
-            console.log("inside for: ", typeof row.order_details[i]._id, " | ", typeof req.body.item_id );
-            if(row.order_details[i]._id.toString() === req.body.item_id)
+            console.log("inside for: ", typeof row.order_details[i]._id, " | ", typeof req.body._id );
+            if(row.order_details[i]._id.toString() === req.body._id)
             {
                 console.log("inside if");
                 row.order_details[i].item_name=req.body.item_name;
@@ -121,7 +126,7 @@ orders_router.post('/item/edit', (req, res) => {
         console.log("data fetched2: ", row);
 
         Orders.replaceOne({
-            "order_details._id":req.body.item_id
+            "order_details._id":req.body._id
         },row)
         .then(row=>{
             console.log("data fetcheddd", row);
