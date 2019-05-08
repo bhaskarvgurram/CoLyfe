@@ -1,41 +1,43 @@
 import React, { Component } from 'react'
 import { Button, Input, Divider, Icon } from 'antd';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios'
 
 class RegisterForm extends Component {
     state = {
         home: "",
-        people: [{
+        account_name: "",
+        persons: [{
             name: "",
             email: ""
         }]
     }
 
     handleChange = (e, i) => {
-        const { people } = this.state;
-        people[i][e.target.name] = e.target.value;
+        const { persons } = this.state;
+        persons[i][e.target.name] = e.target.value;
         this.setState({
-            people
+            persons
         })
     }
 
     handleRemove = (i) => {
-        const { people } = this.state
-        people.splice(i, 1)
+        const { persons } = this.state
+        persons.splice(i, 1)
         this.setState({
-            people
+            persons
         })
     }
 
     handleAddPerson = () => {
-        const { people } = this.state
+        const { persons } = this.state
         const newPerson = {
             name: "",
             email: ""
         }
-        people.push(newPerson)
+        persons.push(newPerson)
         this.setState({
-            people
+            persons
         })
     }
 
@@ -44,30 +46,58 @@ class RegisterForm extends Component {
             home: e.target.value
         })
     }
+
+    handleAccountNameChanged = (e) => {
+        this.setState({
+            account_name: e.target.value
+        })
+    }
     handleRegister = () => {
-        console.log(this.state.people)
+        console.log(this.state.persons)
         console.log(this.state.home)
-        this.props.history.push("/")
+        const { persons, home, account_name } = this.state;
+        let data = {
+            persons,
+            account_name,
+            home_name: home
+        }
+        axios({
+            method: 'post',
+            url: "/home",
+            data
+        })
+            .then(response => {
+                console.log(response)
+                localStorage.setItem("homeId", response.data.homeId)
+                this.props.history.push("/")
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
     }
     render() {
-        const { people, home } = this.state;
+        const { persons, home, account_name } = this.state;
         const { toggleForms } = this.props;
         return (
             <div style={{ margin: "40px 0" }}>
                 <div>
-                    <Input name="name" prefix={<Icon type="home" />} onChange={this.handleHomeChange} value={home} placeholder="Home name"/>
+                    <Input name="name" prefix={<Icon type="home" />} onChange={this.handleHomeChange} value={home} placeholder="Home name" />
+                </div>
+                <div>
+                    <Input name="account_name" prefix={<Icon type="user" />} onChange={this.handleAccountNameChanged} value={account_name} placeholder="Account Name" />
                 </div>
                 {
-                    people.map((person, i) => (
+                    persons.map((person, i) => (
                         <div style={{ display: "flex", marginTop: "10px" }} key={i}>
-                            <Input prefix={<Icon type="user" />} value={people[i].name} name="name" onChange={(e) => this.handleChange(e, i)} placeholder="name" style={{ marginRight: "10px" }} />
-                            <Input prefix={<Icon type="mail" />} value={people[i].email} name="email" type="email" onChange={(e) => this.handleChange(e, i)} placeholder="email" style={{ marginRight: "10px" }} />
+                            <Input prefix={<Icon type="user" />} value={persons[i].name} name="name" onChange={(e) => this.handleChange(e, i)} placeholder="name" style={{ marginRight: "10px" }} />
+                            <Input prefix={<Icon type="mail" />} value={persons[i].email} name="email" type="email" onChange={(e) => this.handleChange(e, i)} placeholder="email" style={{ marginRight: "10px" }} />
                             <Button type="danger" icon="minus" ghost onClick={() => this.handleRemove(i)} />
                         </div>
                     ))
                 }
                 <div>
-                    <Button icon="user-add" style={{ width: "40%", marginTop:"10px" }} type="default" onClick={this.handleAddPerson}>Add More</Button>
+                    <Button icon="user-add" style={{ width: "40%", marginTop: "10px" }} type="default" onClick={this.handleAddPerson}>Add More</Button>
                 </div>
 
                 <Button type="primary" ghost onClick={this.handleRegister} style={{ width: "40%", marginTop: "40px" }} icon="user">Register</Button>

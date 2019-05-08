@@ -8,33 +8,33 @@ class AddTask extends Component {
     people: [
       {
         name: "Bhaskar Gurram",
-        _id: "1"
+        _id: "5ccd0f8ed0879970a0d4615b"
       },
       {
         name: "Rohit",
-        _id: "2"
+        _id: "5ccd0f8ed0879970a0d4615c"
       },
       {
         name: "Sagar",
-        _id: "3"
+        _id: "5ccd0f8ed0879970a0d4615d"
       },
       {
         name: "Hrishikesh",
-        _id: "4"
+        _id: "5ccd0f8ed0879970a0d4615e"
       },
       {
         name: "Vinit",
-        _id: "5"
+        _id: "5ccd0f8ed0879970a0d4615f"
       },
     ],
     startNow: false,
 
   }
   data = {
-    taskDuration: "once",
-    taskName: "",
+    rotation_type: "once",
+    task_name: "",
     startNow: false,
-    selectedIds:  [],
+    person_ids: [],
     startDate: null
   }
   handleDateChange = (date, dateString) => {
@@ -52,23 +52,27 @@ class AddTask extends Component {
   handlePeopleSelect = (name) => {
     console.log(name)
     const { people } = this.state;
-    const selectedIds = [];
+    const person_ids = [];
     people.forEach(p => {
-      if (name.indexOf(p.name) !== -1) selectedIds.push(p._id)
+      if (name.indexOf(p.name) !== -1) person_ids.push(p._id)
     })
-    console.log(selectedIds)
-    this.data.selectedIds = selectedIds;
+    console.log(person_ids)
+    this.data.person_ids = person_ids;
   }
 
   handleChange = (e) => {
-    this.data.taskName = e.target.value
+    this.data.task_name = e.target.value
   }
   handleDurationSelect = (name) => {
-    this.data.taskDuration = name;
+    this.data.rotation_type = name;
   }
 
   handleSubmit = () => {
+    let homeId = localStorage.getItem("homeId");
+    console.log(homeId)
+    if (this.data.startNow) this.data.startDate = "Now"
     console.log(this.data)
+    
   }
   render() {
     const { people, startNow } = this.state
