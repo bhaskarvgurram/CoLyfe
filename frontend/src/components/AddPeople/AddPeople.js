@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Table, Button, Icon, Modal, Form, Input, Alert } from 'antd';
+import { Table, Button, Icon, Modal, Form, Input, Alert, message, Typography } from 'antd';
 
+const { Title } = Typography
 const { Column } = Table;
 
 const data = [{
@@ -27,27 +28,11 @@ class AddPeople extends Component {
   }
 
   componentDidMount() {
-    let people = [{
-      _id: '1',
-      email: 'gurram.bhaskar1608@gmail.com',
-      name: 'Bhaskar Gurram',
-      status: true
-    },
-    {
-      _id: '2',
-      email: 'gurram.bhaskar1608@gmail.com',
-      name: 'Bhaskar Gurram',
-      status: false
-    },
-    {
-      _id: '3',
-      email: 'gurram.bhaskar1608@gmail.com',
-      name: 'Bhaskar Gurram',
-      status: true
-    }]
 
+    let people = JSON.parse(localStorage.getItem("personData"));
     people = people.map(p => ({
-      key: p._id,
+      key: p.id,
+      status: true,
       ...p
     }))
     this.setState({
@@ -61,7 +46,13 @@ class AddPeople extends Component {
   handleDelete = (_id) => {
     console.log(_id)
     let { people } = this.state;
-    people = people.filter(p => p._id !== _id);
+    let localPeople = JSON.parse(localStorage.getItem("personData"))
+    localPeople = localPeople.filter(p => p.id !== _id)
+    localStorage.setItem("personData", JSON.stringify(localPeople))
+    let person = people.filter(p => p.id === _id)[0]
+    people = people.filter(p => p.id !== _id);
+
+    message.success(`${person.name} was removed successfully`)
     this.setState({
       people
     })
@@ -80,8 +71,9 @@ class AddPeople extends Component {
       if (!err) {
         const { people } = this.state;
         console.log('Received values of form: ', values);
-        values.key = "4"
+        values.key = people.length
         people.push(values)
+        message.success(`${values.name} was added successfully!`)
         this.setState({
           people,
           visible: false
@@ -114,7 +106,10 @@ class AddPeople extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Button onClick={this.toggleModal} icon="plus" style={{ display: "flex", marginLeft: "auto", marginBottom: "20px" }}>Add New</Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Title level={4}>All People</Title>
+          <Button onClick={this.toggleModal} icon="plus" style={{ display: "flex", marginLeft: "auto", marginBottom: "20px" }}>Add New</Button>
+        </div>
         <Table
           bordered
           pagination={false}
@@ -145,7 +140,7 @@ class AddPeople extends Component {
             title="Action"
             key="action"
             render={(text, record) => (
-              <Button onClick={() => this.handleDelete(record._id)} type="danger" ghost>Remove</Button>
+              <Button onClick={() => this.handleDelete(record.id)} type="danger" ghost>Remove</Button>
             )}
           />
         </Table>

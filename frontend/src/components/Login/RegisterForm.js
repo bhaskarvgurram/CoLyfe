@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, Divider, Icon } from 'antd';
+import { Button, Input, Divider, Icon, message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios'
 
@@ -69,9 +69,12 @@ class RegisterForm extends Component {
             .then(response => {
                 console.log(response)
                 localStorage.setItem("homeId", response.data.homeId)
+                localStorage.setItem("personData", JSON.stringify(response.data.personData))
+                message.success("Home created successfully")
                 this.props.history.push("/")
             })
             .catch(err => {
+                message.error("Please enter all the details!")
                 console.log(err)
             })
 
@@ -82,7 +85,7 @@ class RegisterForm extends Component {
         return (
             <div style={{ margin: "40px 0" }}>
                 <div>
-                    <Input name="name" prefix={<Icon type="home" />} onChange={this.handleHomeChange} value={home} placeholder="Home name" />
+                    <Input name="name" prefix={<Icon type="home" />} onChange={this.handleHomeChange} value={home} placeholder="Home name" style={{ margin: "10px 0" }}/>
                 </div>
                 <div>
                     <Input name="account_name" prefix={<Icon type="user" />} onChange={this.handleAccountNameChanged} value={account_name} placeholder="Account Name" />

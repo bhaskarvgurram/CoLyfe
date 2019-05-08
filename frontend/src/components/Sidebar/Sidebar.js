@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Icon } from "antd";
+import { Layout, Menu, Icon, Typography, message } from "antd";
 import { Switch, Route } from "react-router-dom";
 import Home from "../Home/Home";
 import OneTime from "../OneTime/OneTime";
@@ -12,11 +12,19 @@ import AddList from "../AddList/AddList";
 import Dashboard from "../Dashboard/Dashboard";
 
 const { Header, Content, Sider } = Layout;
+const { Title } = Typography;
 
 class Sidebar extends React.Component {
   state = {
     collapsed: false
   };
+
+  componentDidMount() {
+    if (!localStorage.getItem("homeId")) {
+      message.error("Please login!");
+      this.props.history.push("/login");
+    }
+  }
 
   onCollapse = collapsed => {
     console.log(collapsed);
@@ -28,6 +36,10 @@ class Sidebar extends React.Component {
     this.props.history.push(`/${key}`);
   };
 
+  handleLogout = () => {
+    localStorage.clear();
+    this.props.history.push("/login");
+  };
   render() {
     const { content } = this.props;
     return (
@@ -51,10 +63,6 @@ class Sidebar extends React.Component {
             <Menu.Item key="dashboard">
               <Icon type="pie-chart" />
               <span>Dashboard</span>
-            </Menu.Item>
-            <Menu.Item key="oneTime">
-              <Icon type="exception" />
-              <span>One Time</span>
             </Menu.Item>
             <Menu.Item key="daily">
               <Icon type="solution" />
@@ -83,13 +91,30 @@ class Sidebar extends React.Component {
           </Menu>
         </Sider>
         <Layout>
-          <Header style={{ background: "#fff", padding: 0 }} />
+          <Header style={{ background: "#fff", padding: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div
+                style={{
+                  marginLeft: "20px",
+                  fontWeight: "600",
+                  fontSize: "20px"
+                }}
+              >
+                Home
+              </div>
+              <div
+                style={{ marginRight: "20px", cursor: "pointer" }}
+                onClick={this.handleLogout}
+              >
+                <Icon type="logout" />
+                &nbsp;Logout
+              </div>
+            </div>
+          </Header>
           <Content style={{ margin: "16px 16px" }}>
-            <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
+            <div style={{ padding: 24, background: "#fff", minHeight: "90vh" }}>
               <Switch>
                 <Route path="/dashboard" component={Dashboard} />
-
-                <Route path="/oneTime" component={OneTime} />
                 <Route path="/daily" component={Daily} />
                 <Route path="/weekly" component={Weekly} />
                 <Route path="/monthly" component={Monthly} />

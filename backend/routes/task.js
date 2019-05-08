@@ -8,14 +8,66 @@ const TaskAssignment = require('./../models/TaskAssignment');
 
 const _ = require('lodash');
 
-// gets tasks associated with a home
-task_router.get('/all', async (req, res) => {
-    console.log('Ing get ');
+// const TaskSchema = new Schema({
+//     name: String,
+//     createdby_id: { type: Schema.Types.ObjectId, ref: 'Person' },
+//     homeId: { type: Schema.Types.ObjectId, ref: 'Home' },
+//     rotationType: String,
+//     start: Date,
+//     rotationDay: String,
+//     people: [String],
+// }, { timestamps: true });
 
+// gets tasks associated with a home
+task_router.get('/', async (req, res) => {
+    console.log('Ing get ');
+    let homeId = req.query.homeId;
+    let rotationType = req.query.rotationType;
+    let tasks = [];
+    if (rotationType !== "ALL") {
+        console.log('Got home id ', homeId);
+        tasks = await Task.find({
+            rotationType: rotationType,
+            homeId: homeId
+        })
+    } else {
+        tasks = await Task.find({
+            homeId: homeId
+        })
+    }
+
+
+    let tasks_data = await Promise.all(tasks.map(async (task) => {
+        let task_data = _.pick(task, ['name', 'homeId', 'rotationType', 'id']);
+
+
+        const task_people_rows = await Person.find({
+            '_id': { $in: task.people }
+        });
+
+        task_data['people'] = "";
+        for (var i = 0; i < task_people_rows.length; i++) {
+            var task_person = task_people_rows[i];
+            if (i < task_people_rows.length - 1) {
+                task_data['people'] = task_data['people'] + task_person.name + ", ";
+            } else {
+                task_data['people'] = task_data['people'] + task_person.name;
+
+            }
+
+        }
+
+        return task_data;
+
+    }));
 
     // get daily, weekly and monthly tasks, and their info
-    res.send('Success');
+    res.status(200).send(tasks_data);
 });
+
+
+
+
 
 // creates a new task
 task_router.post('/create', async (req, res) => {
@@ -41,6 +93,8 @@ task_router.post('/create', async (req, res) => {
     if (startDate.toUpperCase() === "NOW") {
         start_date = new Date();
         // create Task assignments now
+    } else {
+        start_date = startDate;
     }
 
     let task = new Task({
@@ -71,7 +125,7 @@ task_router.post('/create', async (req, res) => {
         task_person.taskHistory = taskHistory;
         task_person.save();
     }
-    task.save();
+    await task.save();
     if (startDate.toUpperCase() === "NOW") {
         assignTasks(task);
         // create Task assignments now
@@ -101,7 +155,11 @@ task_router.post('/assign', async (req, res) => {
 
 
 task_router.post('/clearAll', async (req, res) => {
-    let persons = await Person.find({});
+    console.log('Clear all');
+    let homeId = req.body.homeId;
+    let persons = await Person.find({
+        house_id: homeId
+    });
 
     for (var i = 0; i < persons.length; i++) {
         let update = {

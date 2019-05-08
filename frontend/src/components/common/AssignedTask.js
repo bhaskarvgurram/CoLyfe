@@ -3,88 +3,56 @@ import { Avatar, Typography, Icon, Card, Select, Button } from 'antd'
 import "./AssignedTask.css";
 const { Text, Title } = Typography;
 const { Option } = Select;
-const people = [
-    {
-        name: "Bhaskar Gurram",
-        _id: "1"
-    },
-    {
-        name: "Rohit",
-        _id: "2"
-    },
-    {
-        name: "Sagar",
-        _id: "3"
-    },
-    {
-        name: "Hrishikesh",
-        _id: "4"
-    },
-    {
-        name: "Vinit",
-        _id: "5"
-    },
-]
-class AssignedTask extends Component {
-    state = {
-        person: {
-            name: "Bhaskar Gurram",
-            _id: "1"
-        },
-        task: {
-            name: "Cleaning",
-            _id: "1",
-            type: "Weekly Task",
-            isComplete: false
-        }
 
-    }
+
+class AssignedTask extends Component {
+    
     handleTaskClick = (_id) => {
         console.log(_id)
     }
-    handleChange = (e) => {
-        console.log(e)
+    handleChange = (_id) => {
+        console.log(_id)
+
     }
     handleRemind = () => {
-        const { person } = this.state;
-        console.log(person._id)
+        const { personId } = this.props.task;
+        console.log(personId)
     }
-    handleMarkComplete = () => {
-        const { task } = this.state;
-        task.isComplete = true;
-        this.setState({
-            task
-        })
-    }
+   
     render() {
-        const { person, task } = this.state;
+        const {handleMarkComplete, task} = this.props
+        let people = JSON.parse(localStorage.getItem("personData"))
+        console.log(people)
         return (
             <Card
-                title={task.type}
-                actions={[
-                    task.isComplete ?
-                        <><Icon type="check-circle" /> Completed</>
-                        :
-                        <Button icon="check-circle" onClick={this.handleMarkComplete}>Mark Complete</Button>
-                ]}
-                extra={<Button icon="bell" onClick={this.handleRemind}>Remind</Button>}
-                style={{ width: "50%" }}>
+                title={task.rotationType}
+               
+                extra={
+                    <>
+                        <Button icon="bell" onClick={this.handleRemind}>Remind</Button> &nbsp;
+                        {task.done ?
+                            <><Icon type="check-circle" /> Completed</>
+                            :
+                            <Button icon="check-circle" onClick={() => handleMarkComplete(task.id)}>Mark Complete</Button>}
+                    </>
+                }
+                style={{ width: "100%", marginBottom: "20px" }}>
                 <div >
                     <Avatar icon="user" style={{ marginRight: "5px" }} />
-                    <Select defaultValue={person._id} onChange={this.handleChange}>
+                    <Select defaultValue={task.personId} onChange={this.handleChange}>
                         {
                             people.map(d => (
-                                <Option key={d._id} >{d.name}</Option>
+                                <Option key={d.id} >{d.name}</Option>
                             ))
                         }
                     </Select>
                     &nbsp; has been assigned
                     <Title level={4} className="task_name"
-                        onClick={() => this.handleTaskClick(task._id)}
+                        onClick={() => this.handleTaskClick(task.id)}
 
-                    >{task.name}</Title>
+                    >{task.taskName}</Title>
                 </div>
-            </Card>
+            </Card >
         )
     }
 }
