@@ -11,6 +11,23 @@ home_router.get('/', async (req, res) => {
     res.send('Success');
 });
 
+//get all people in a home
+
+home_router.get('/people', (req, res)=>{
+    console.log("req.query ", req.query);
+    Person.find({
+        house_id:req.query.house_id
+    })
+    .then(row=>{
+        console.log("data deleted", row);
+            res.status(200).send(row);
+    })
+    .catch(err=>{
+        console.log("error in query", err);
+    res.status(400);
+    })
+})
+
 
 // creates a new home
 home_router.post('/', async (req, res) => {
