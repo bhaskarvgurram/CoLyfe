@@ -13,7 +13,7 @@ const OrdersSchema = new Schema({
             item_qty: {type:String},
             item_sharedby: [{
                 user_id: { type: Schema.Types.ObjectId, ref: "Person" },
-                // user_name: {type:String}
+                user_name: {type:String}
             }],
             date: Date
         }
