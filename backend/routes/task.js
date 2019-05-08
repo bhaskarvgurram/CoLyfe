@@ -71,7 +71,7 @@ task_router.post('/create', async (req, res) => {
         task_person.save();
     }
     task.save();
-    if (startDate === "NOW") {
+    if (startDate.toUpperCase() === "NOW") {
         assignTasks(task);
         // create Task assignments now
     }
