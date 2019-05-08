@@ -37,7 +37,7 @@ task_router.post('/create', async (req, res) => {
         rotation_day = req.body.rotation_day;  // 1,2,3,....30,31
     }
 
-    if (startDate === "NOW") {
+    if (startDate.toUpperCase() === "NOW") {
         startDate = new Date();
         // create Task assignments now
     }

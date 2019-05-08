@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Card, DatePicker, Input, Select, Button, Icon, Checkbox } from 'antd';
+import axios from 'axios';
 const { RangePicker } = DatePicker;
+
 const { Option } = Select;
 
 class AddTask extends Component {
@@ -72,7 +74,17 @@ class AddTask extends Component {
     console.log(homeId)
     if (this.data.startNow) this.data.startDate = "Now"
     console.log(this.data)
-    
+    axios({
+      method: 'post',
+      url: '/task/create',
+      data: this.data
+    })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   render() {
     const { people, startNow } = this.state
