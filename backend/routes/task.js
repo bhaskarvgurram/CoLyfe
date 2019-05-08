@@ -39,7 +39,6 @@ task_router.post('/create', async (req, res) => {
 
     if (startDate === "NOW") {
         startDate = new Date();
-        assignTasks(task);
         // create Task assignments now
     }
 
@@ -52,7 +51,7 @@ task_router.post('/create', async (req, res) => {
         start: startDate,
     });
 
-    task.save();
+
     console.log('Created New Task');
 
     const task_people_rows = await Person.find({
@@ -72,6 +71,11 @@ task_router.post('/create', async (req, res) => {
         task_person.save();
     }
 
+    if (startDate === "NOW") {
+        assignTasks(task);
+        // create Task assignments now
+    }
+    task.save();
 
     res.status(200).send('Success');
 });
