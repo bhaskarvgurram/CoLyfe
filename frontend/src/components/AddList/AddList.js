@@ -23,7 +23,7 @@ const Panel = Collapse.Panel;
 class AddList extends Component {
   state = {
     activeItem: {},
-    people: [
+    item_sharedby: [
       {
         name: "Hrishikesh",
         _id: "5ccd0f8ed0879970a0d4615b"
@@ -45,59 +45,87 @@ class AddList extends Component {
         _id: "5ccd0f8ed0879970a0d4615f"
       }
     ],
-    items: [
+    order_details: [
       {
-        name: "",
-        quantity: 0,
-        people: []
+        item_name: "",
+        item_qty: 0,
+        item_sharedby: []
       }
     ],
-    title: "",
+    list_title: "",
     // list: [{ listName: "" }, [{ name: "" }, { quantity: "" }, { people: [] }]],
     visible: false,
     editItemVisible: false,
-    list: [
-      {
-        listName: "list 5",
-        listId: 1,
-        item: [
-          {
-            itemId: 11,
-            name: "mango",
-            quantity: 20,
-            members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
-          },
-          {
-            itemId: 12,
+    list: []
+    // list: [
+    //   {
+    //     list_: "",
+    //     listId: "",
+    //     item: [
 
-            name: "apple",
-            quantity: 20,
-            members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
-          }
-        ]
-      },
-      {
-        listName: "list 7",
-        listId: "2",
-        item: [
-          {
-            itemId: 13,
+    //     ]
+    //   }
+    // ],
+    // list: [
+    //   {
+    //     listName: "list 5",
+    //     listId: 1,
+    //     item: [
+    //       {
+    //         itemId: 11,
+    //         name: "mango",
+    //         quantity: 20,
+    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
+    //       },
+    //       {
+    //         itemId: 12,
 
-            name: "orange",
-            quantity: 20,
-            members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
-          },
-          {
-            itemId: 14,
+    //         name: "apple",
+    //         quantity: 20,
+    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     listName: "list 7",
+    //     listId: "2",
+    //     item: [
+    //       {
+    //         itemId: 13,
 
-            name: "chikku",
-            quantity: 20,
-            members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
-          }
-        ]
-      }
-    ]
+    //         name: "orange",
+    //         quantity: 20,
+    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
+    //       },
+    //       {
+    //         itemId: 14,
+
+    //         name: "chikku",
+    //         quantity: 20,
+    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
+    //       }
+    //     ]
+    //   }
+    // ]
   };
+
+  componentDidMount() {
+    let home_id = "5ccd0f8ed0879970a0d4615a";
+
+    axios
+      .get(`http://localhost:9000/list/display/${home_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("get response data ", res.data);
+          this.setState({
+            list: res.data
+          });
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
+  }
 
   // data = {
   //   title: "",
@@ -130,23 +158,25 @@ class AddList extends Component {
   };
 
   handleOk = e => {
-    const { items, title } = this.state;
+    const { items, list_title, order_details } = this.state;
     this.setState({
       visible: false
     });
-
+    let home_id = "5ccd0f8ed0879970a0d4615a";
     const data = {
-      title,
-      items
+      home_id,
+      list_title,
+      order_details
     };
 
     console.log(data);
 
     axios
-      .post("http://10.0.0.198:5000/list/item/create", data)
+      .post("http://localhost:9000/list/create", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
+          this.componentDidMount();
         }
       })
       .catch(err => {
@@ -163,73 +193,140 @@ class AddList extends Component {
 
   handleChange = (e, i) => {
     // e.persist();
-    const { items } = this.state;
-    items[i][e.target.name] = e.target.value;
+    const { items, order_details } = this.state;
+    order_details[i][e.target.name] = e.target.value;
     this.setState({
-      items
+      order_details
     });
   };
 
   handleRemove = i => {
-    const { items } = this.state;
-    items.splice(i, 1);
+    const { order_details } = this.state;
+    order_details.splice(i, 1);
     this.setState({
-      items
+      order_details
     });
   };
 
   handleAddItem = () => {
-    let { items } = this.state;
+    let { items, order_details } = this.state;
     const newAddItem = {
-      name: "",
-      quantity: 0,
-      people: []
+      item_name: "",
+      item_qty: 0,
+      item_sharedby: []
     };
-    items.push(newAddItem);
+    console.log("push array", newAddItem);
+    order_details.push(newAddItem);
+    console.log("push array", order_details);
+
     this.setState({
-      items
+      order_details
     });
   };
 
   handleSelectChange = (name, i) => {
     // const id = parseInt(name);
     // console.log(id);
-    const { items, people } = this.state;
+    const { items, people, item_sharedby, order_details } = this.state;
     const selectedIds = [];
-    people.forEach(p => {
-      if (name.indexOf(p.name) !== -1) selectedIds.push(p._id);
+    item_sharedby.forEach((p, i) => {
+      if (name.indexOf(p.name) !== -1)
+        selectedIds.push({ user_id: p._id, user_name: p.name });
     });
-    items[i]["people"] = selectedIds;
+    order_details[i]["item_sharedby"] = selectedIds;
     this.setState({
-      items
+      order_details
     });
   };
 
   handlTitleChange = e => {
     this.setState({
-      title: e.target.value
+      list_title: e.target.value
     });
   };
 
-  deleteList = id => {
-    console.log("delete list id", id);
+  deleteList = list_id => {
+    console.log("delete list id", list_id);
+    const data = {
+      list_id
+    };
+
+    axios
+      .post("http://localhost:9000/list/delete", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
   };
 
-  removeItem = id => {
-    console.log("delete item id", id);
+  removeItem = item_id => {
+    console.log("delete item id", item_id);
+    const data = {
+      item_id
+    };
+
+    axios
+      .post("http://localhost:9000/list/item/delete", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
   };
 
-  editItem = id => {
-    console.log("edit item id", this.state.itemId);
+  editItem = () => {
+    //console.log("edit item id", this.state.activeItem);
+
+    let data = this.state.activeItem;
+    console.log("final edit ", data);
+
+    axios
+      .post("http://localhost:9000/list/item/edit", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
   };
 
   handleEditSelectChange = name => {
     console.log(name);
   };
+
+  edithandleChange = e => {
+    const { activeItem } = this.state;
+    console.log(e.target.value);
+    activeItem[e.target.name] = e.target.value;
+    this.setState({
+      activeItem
+    });
+    // console.log("final edit ", this.state.activeItem);
+  };
+
   render() {
-    console.log("inside render");
-    console.log("after setting state", this.state.activeItemId);
-    const { items, people, item, members, list, activeItem } = this.state;
+    const {
+      items,
+      order_details,
+      people,
+      item_sharedby,
+      item,
+      members,
+      list,
+      activeItem
+    } = this.state;
 
     function callback(key) {
       console.log(key);
@@ -256,16 +353,17 @@ class AddList extends Component {
                 placeholder="List Title"
                 style={{ marginBottom: "15px" }}
                 // value={list.listName}]
+                name="list_title"
                 onChange={this.handlTitleChange}
               />
-              {items.map((item, i) => (
+              {order_details.map((item, i) => (
                 <div style={{ marginTop: "10px" }} key={i}>
                   <Row>
                     <Col span={15}>
                       <Input
                         prefix={<Icon type="shopping" />}
-                        value={items[i].name}
-                        name="name"
+                        value={order_details[i].item_name}
+                        name="item_name"
                         onChange={e => this.handleChange(e, i)}
                         placeholder="name"
                         style={{ marginRight: "10px" }}
@@ -275,8 +373,8 @@ class AddList extends Component {
                     <Col span={4}>
                       <Input
                         prefix={<Icon type="shopping-cart" />}
-                        value={items[i].quantity}
-                        name="quantity"
+                        value={order_details[i].item_qty}
+                        name="item_qty"
                         onChange={e => this.handleChange(e, i)}
                         placeholder="quantity"
                         style={{ marginRight: "10px" }}
@@ -304,7 +402,7 @@ class AddList extends Component {
                         placeholder="add people"
                         onChange={name => this.handleSelectChange(name, i)}
                       >
-                        {people.map(p => (
+                        {item_sharedby.map(p => (
                           <Option key={p.name}>{p.name}</Option>
                         ))}
                       </Select>
@@ -329,34 +427,42 @@ class AddList extends Component {
         <Row>
           <Col span={20}>
             {list.map((v, index) => (
-              <Collapse onChange={callback} key={index}>
+              <Collapse
+                onChange={callback}
+                key={index}
+                style={{ marginBottom: "10px" }}
+              >
                 <Panel
-                  header={v.listName}
+                  header={v.list_title}
                   key="1"
                   extra={
                     <Icon
                       type="delete"
-                      onClick={() => this.deleteList(v.listId)}
+                      onClick={() => this.deleteList(v._id)}
                     />
                   }
                 >
-                  <Table bordered pagination={false} dataSource={v.item}>
+                  <Table
+                    bordered
+                    pagination={false}
+                    dataSource={v.order_details}
+                  >
                     {/* render={(text, record) =>( */}
                     {/* record.item.map(n => */}
-                    <Column title="Name" dataIndex="name" key="name" />
+                    <Column title="Name" dataIndex="item_name" key="name" />
 
                     <Column
                       title="Quantity"
-                      dataIndex="quantity"
+                      dataIndex="item_qty"
                       key="quantity"
                     />
 
                     <Column
                       title="Members"
                       key="members"
-                      dataIndex="members"
+                      dataIndex="item_sharedby"
                       render={(text, record) =>
-                        record.members.map(n => <p> {n.name}</p>)
+                        record.item_sharedby.map(n => <p> {n.user_name}</p>)
                       }
                     />
                     <Column
@@ -378,7 +484,7 @@ class AddList extends Component {
                       dataIndex="itemId"
                       render={(text, record) => (
                         <Button
-                          onClick={() => this.removeItem(record.itemId)}
+                          onClick={() => this.removeItem(record._id)}
                           type="danger"
                           ghost
                         >
@@ -403,38 +509,30 @@ class AddList extends Component {
           width="700px"
         >
           <Row>
-            <Input value={activeItem.name} />
-            <Input value={activeItem.quantity} />
+            <Input
+              name="item_name"
+              value={activeItem.item_name}
+              onChange={e => this.edithandleChange(e)}
+            />
+            <Input
+              name="item_qty"
+              value={activeItem.item_qty}
+              onChange={e => this.edithandleChange(e)}
+            />
             <Select
               style={{ width: "100%" }}
               mode="multiple"
               defaultValue={
-                activeItem.members
-                  ? activeItem.members.map(member => member.name)
+                activeItem.item_sharedby
+                  ? activeItem.item_sharedby.map(member => member.user_name)
                   : []
               }
               onChange={this.handleEditSelectChange}
             >
-              {people.map(p => (
+              {item_sharedby.map(p => (
                 <Option value={p.name}>{p.name}</Option>
               ))}
             </Select>
-            {/* {this.state.list.map(l => {
-              
-              l.item.map(id => {
-                if (id.itemId === this.state.activeItemId) {
-                  console.log("inside if");
-                  return (
-                    <Input
-                      placeholder="List Title"
-                      style={{ marginBottom: "15px" }}
-                      value={id.name}
-                      onChange={this.handlTitleChange}
-                    />
-                  );
-                }
-              });
-            })} */}
           </Row>
         </Modal>
       </Row>
