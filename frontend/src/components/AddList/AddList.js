@@ -113,7 +113,7 @@ class AddList extends Component {
     let home_id = "5ccd0f8ed0879970a0d4615a";
 
     axios
-      .get(`http://localhost:9000/list/display/${home_id}`)
+      .get(`http://172.20.10.13:5000/list/display/${home_id}`)
       .then(res => {
         if (res.status === 200) {
           console.log("get response data ", res.data);
@@ -172,7 +172,7 @@ class AddList extends Component {
     console.log(data);
 
     axios
-      .post("http://localhost:9000/list/create", data)
+      .post("http://172.20.10.13:5000/list/create", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -252,7 +252,7 @@ class AddList extends Component {
     };
 
     axios
-      .post("http://localhost:9000/list/delete", data)
+      .post("http://172.20.10.13:5000/list/delete", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -271,7 +271,7 @@ class AddList extends Component {
     };
 
     axios
-      .post("http://localhost:9000/list/item/delete", data)
+      .post("http://172.20.10.13:5000/list/item/delete", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
@@ -290,11 +290,15 @@ class AddList extends Component {
     console.log("final edit ", data);
 
     axios
-      .post("http://localhost:9000/list/item/edit", data)
+      .post("http://172.20.10.13:5000/list/item/edit", data)
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
+
           this.componentDidMount();
+          this.setState({
+            editItemVisible: false
+          });
         }
       })
       .catch(err => {
@@ -493,6 +497,14 @@ class AddList extends Component {
                       )}
                     />
                   </Table>
+                  <Button
+                    style={{ float: "left", margin: "5px" }}
+                    onClick={this.showModal}
+                    onClick={() => this.editItemVisibleModal()}
+                  >
+                    <Icon type="plus" />
+                    Add Item
+                  </Button>
                 </Panel>
               </Collapse>
             ))}
