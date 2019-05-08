@@ -62,8 +62,8 @@ class AddList extends Component {
   };
 
   componentDidMount() {
-    localStorage.setItem("home_id", "5cd338697da91d0c51744dc1");
-    let home_id=localStorage.getItem("home_id");
+
+    let home_id= localStorage.getItem("homeId");
 
     axios.get(`/home/people`, {params: {home_id: home_id}})
     .then(res=>{
@@ -78,6 +78,7 @@ class AddList extends Component {
     .catch(err => {
       console.log("view error: ", err);
     });
+ 
 
     axios
       .get(`/list/display/${home_id}`)
@@ -127,7 +128,7 @@ class AddList extends Component {
     this.setState({
       visible: false
     });
-    let home_id=localStorage.getItem("home_id");
+    let home_id = localStorage.getItem("homeId");
     const data = {
       home_id,
       list_title,

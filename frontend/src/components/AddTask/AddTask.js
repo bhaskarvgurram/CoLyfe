@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, DatePicker, Input, Select, Button, Icon, Checkbox } from 'antd';
+import { Card, DatePicker, Input, Select, Button, Icon, Checkbox, message } from 'antd';
 import axios from 'axios';
 const { RangePicker } = DatePicker;
 
@@ -89,6 +89,8 @@ class AddTask extends Component {
       data: this.data
     })
       .then(response => {
+        message.success("Task was created Successfulll!")
+        this.props.history.push("/");
         console.log(response)
       })
       .catch(err => {
