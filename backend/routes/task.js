@@ -70,12 +70,12 @@ task_router.post('/create', async (req, res) => {
         task_person.taskHistory = taskHistory;
         task_person.save();
     }
-
+    task.save();
     if (startDate === "NOW") {
         assignTasks(task);
         // create Task assignments now
     }
-    task.save();
+
 
     res.status(200).send('Success');
 });
