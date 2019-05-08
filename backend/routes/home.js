@@ -67,7 +67,8 @@ home_router.post('/', async (req, res) => {
         person.taskHistory = update;
         person_data.push({
             name: person.name,
-            id: person.id
+            id: person.id,
+            email: person.email
         });
 
         await person.save();
