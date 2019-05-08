@@ -33,11 +33,19 @@ class AddTask extends Component {
 
   }
   data = {
-    rotation_type: "once",
+    rotation_type: "ONCE",
     task_name: "",
     startNow: false,
     person_ids: [],
     startDate: null
+  }
+
+  componentDidMount() {
+    let people = JSON.parse(localStorage.getItem('personData'))
+    console.log(people)
+    this.setState({
+      people
+    })
   }
   handleDateChange = (date, dateString) => {
     console.log(date, dateString)
@@ -56,7 +64,7 @@ class AddTask extends Component {
     const { people } = this.state;
     const person_ids = [];
     people.forEach(p => {
-      if (name.indexOf(p.name) !== -1) person_ids.push(p._id)
+      if (name.indexOf(p.name) !== -1) person_ids.push(p.id)
     })
     console.log(person_ids)
     this.data.person_ids = person_ids;
@@ -72,7 +80,8 @@ class AddTask extends Component {
   handleSubmit = () => {
     let homeId = localStorage.getItem("homeId");
     console.log(homeId)
-    if (this.data.startNow) this.data.startDate = "Now"
+    if (this.data.startNow) this.data.startDate = "NOW"
+    this.data.homeId = homeId;
     console.log(this.data)
     axios({
       method: 'post',
@@ -114,11 +123,11 @@ class AddTask extends Component {
             </Select>
           </div>
           <div style={{ margin: "15px 0" }}>
-            <Select defaultValue="once" onChange={this.handleDurationSelect} style={{ width: "100%" }}>
-              <Option key="once">Once</Option>
-              <Option key="daily">Daily</Option>
-              <Option key="weekly">Weekly</Option>
-              <Option key="monthly">Monthly</Option>
+            <Select defaultValue="ONCE" onChange={this.handleDurationSelect} style={{ width: "100%" }}>
+              <Option key="ONCE">Once</Option>
+              <Option key="DAILY">Daily</Option>
+              <Option key="WEEKLY">Weekly</Option>
+              <Option key="MONTHLY">Monthly</Option>
             </Select>
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
