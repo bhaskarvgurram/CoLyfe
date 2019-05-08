@@ -1,6 +1,7 @@
 var express = require('express');
 const orders_router = express.Router();
 const Orders = require('./../models/Orders');
+const Person = require('./../models/Person');
 const mongoose = require("mongoose");
 
 const _ = require('lodash');
@@ -191,6 +192,23 @@ orders_router.post('/delete', (req, res)=>{
     console.log("req.body ", req.body);
     Orders.remove({
         _id:req.body.list_id
+    })
+    .then(row=>{
+        console.log("data deleted", row);
+            res.status(200).send(row);
+    })
+    .catch(err=>{
+        console.log("error in query", err);
+    res.status(400);
+    })
+})
+
+//get people in a home
+
+orders_router.get('/people', (req, res)=>{
+    console.log("req.query ", req.query);
+    Person.find({
+        house_id:req.query.house_id
     })
     .then(row=>{
         console.log("data deleted", row);
