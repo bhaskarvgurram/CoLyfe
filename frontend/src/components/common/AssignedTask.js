@@ -29,11 +29,11 @@ class AssignedTask extends Component {
                
                 extra={
                     <>
-                        <Button icon="bell" onClick={this.handleRemind}>Remind</Button> &nbsp;
+                        <Button style={{backgroundColor:"#D4A59A", color:"black"}} icon="bell" onClick={this.handleRemind}>Remind</Button> &nbsp;
                         {task.done ?
                             <><Icon type="check-circle" /> Completed</>
                             :
-                            <Button icon="check-circle" onClick={() => handleMarkComplete(task.id)}>Mark Complete</Button>}
+                            <Button type="primary" icon="check-circle" onClick={() => handleMarkComplete(task.id)}>Mark Complete</Button>}
                     </>
                 }
                 style={{ width: "100%", marginBottom: "20px" }}>
@@ -47,7 +47,7 @@ class AssignedTask extends Component {
                         }
                     </Select>
                     &nbsp; has been assigned
-                    <Title level={4} className="task_name"
+                    <Title level={4} className="task_name" style={{fontSize:"16px"}}
                         onClick={() => this.handleTaskClick(task.id)}
 
                     >{task.taskName}</Title>

@@ -8,7 +8,7 @@ export default function TaskCard({ task, handleDeleteTask, handleAssignTask }) {
             style={{ marginBottom: "10px" }}
         >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>
+                <div style={{width:"60%"}}>
                     <Text strong>{task.name}</Text>
                     <div>
                         {task.people}
