@@ -14,12 +14,12 @@ home_router.get('/', async (req, res) => {
 //get all people in a home
 
 home_router.get('/people', (req, res)=>{
-    console.log("req.query ", req.query);
+    console.log("req.query.home_id ", req.query.home_id);
     Person.find({
-        house_id:req.query.house_id
+        house_id:req.query.home_id
     })
     .then(row=>{
-        console.log("data deleted", row);
+        console.log("people in the house from backend: ", row);
             res.status(200).send(row);
     })
     .catch(err=>{

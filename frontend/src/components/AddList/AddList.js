@@ -22,29 +22,30 @@ const Panel = Collapse.Panel;
 
 class AddList extends Component {
   state = {
+    house_people_details: [],     //get all people in the house
     activeItem: {},
-    item_sharedby: [
-      {
-        name: "Hrishikesh",
-        _id: "5ccd0f8ed0879970a0d4615b"
-      },
-      {
-        name: "Atul Gutal",
-        _id: "5ccd0f8ed0879970a0d4615d"
-      },
-      {
-        name: "Pranav Dixit",
-        _id: "5ccd0f8fd0879970a0d46160"
-      },
-      {
-        name: "Rohit Sapkal",
-        _id: "45ccd0f8ed0879970a0d4615e"
-      },
-      {
-        name: "Sagar Bonde",
-        _id: "5ccd0f8ed0879970a0d4615f"
-      }
-    ],
+    // item_sharedby: [
+    //   {
+    //     name: "Hrishikesh",
+    //     _id: "5ccd0f8ed0879970a0d4615b"
+    //   },
+    //   {
+    //     name: "Atul Gutal",
+    //     _id: "5ccd0f8ed0879970a0d4615d"
+    //   },
+    //   {
+    //     name: "Pranav Dixit",
+    //     _id: "5ccd0f8fd0879970a0d46160"
+    //   },
+    //   {
+    //     name: "Rohit Sapkal",
+    //     _id: "45ccd0f8ed0879970a0d4615e"
+    //   },
+    //   {
+    //     name: "Sagar Bonde",
+    //     _id: "5ccd0f8ed0879970a0d4615f"
+    //   }
+    // ],
     order_details: [
       {
         item_name: "",
@@ -57,11 +58,26 @@ class AddList extends Component {
     visible: false,
     editItemVisible: false,
     addItemVisible: false,
-    list: []
+    list: []                    //get all lists in the house
   };
 
   componentDidMount() {
-    let home_id = "5ccd0f8ed0879970a0d4615a";
+    localStorage.setItem("home_id", "5cd338697da91d0c51744dc1");
+    let home_id=localStorage.getItem("home_id");
+
+    axios.get(`/home/people`, {params: {home_id: home_id}})
+    .then(res=>{
+      if(res.status===200){
+        console.log("people in the house res data: ", res.data);
+        this.setState({
+          house_people_details: res.data
+        })
+        console.log("HOUSE PEOPLE: ", this.state.house_people_details);
+      }
+    })
+    .catch(err => {
+      console.log("view error: ", err);
+    });
 
     axios
       .get(`/list/display/${home_id}`)
@@ -85,8 +101,9 @@ class AddList extends Component {
   };
 
   editItemVisibleModal = item => {
+    console.log(item);
     const { list } = this.state;
-
+    console.log(list);
     this.setState({
       editItemVisible: true,
       activeItem: item
@@ -103,10 +120,14 @@ class AddList extends Component {
 
   handleOk = e => {
     const { items, list_title, order_details } = this.state;
+    console.log("e",e);
+    console.log("list_title", list_title);
+    console.log("this.state.itemsSharedBy", this.state.itemsSharedBy);
+    
     this.setState({
       visible: false
     });
-    let home_id = "5ccd0f8ed0879970a0d4615a";
+    let home_id=localStorage.getItem("home_id");
     const data = {
       home_id,
       list_title,
@@ -170,15 +191,24 @@ class AddList extends Component {
   };
 
   handleSelectChange = (name, i) => {
-    // const id = parseInt(name);
-    // console.log(id);
-    const { items, people, item_sharedby, order_details } = this.state;
-    const selectedIds = [];
-    item_sharedby.forEach((p, i) => {
-      if (name.indexOf(p.name) !== -1)
-        selectedIds.push({ user_id: p._id, user_name: p.name });
-    });
-    order_details[i]["item_sharedby"] = selectedIds;
+    console.log("CHECK name: ",name);
+    console.log("CHECK i: ",i);
+    console.log("names: ", i[0].props);
+let a=[], b=[];
+    for(let c=0; c<i.length; c++){
+      a.push(i[c].props);
+    }
+    console.log(a);
+    console.log("itemsSharedBy: ", a)
+    for(let c=0; c<a.length; c++){
+      b.push({user_id: a[c].value, user_name: a[c].name})
+    }
+    console.log("B: ", b);
+    const { order_details } = this.state;
+    for(let k=0; k<order_details.length; k++){
+    this.state.order_details[k].item_sharedby=b;
+  }
+    console.log("this.state.order_details.item_sharedby: ",this.state.order_details.item_sharedby);
     this.setState({
       order_details
     });
@@ -250,9 +280,29 @@ class AddList extends Component {
         console.log("view error: ", err);
       });
   };
+  handleAddItemSelectChange = name =>{
+    console.log(">>add item>>");
+    console.log(">>>", this.state.activeItem);
+  }
 
   handleEditSelectChange = name => {
-    console.log(">>> ", name);
+    console.log(">>edit item>>");
+
+    // order_details: [
+    //   {
+    //     item_name: "",
+    //     item_qty: 0,
+    //     item_sharedby: []
+    //   }
+
+    console.log(">>>", this.state.activeItem);
+// let active = this.state.activeItem;
+    // this.setState({
+    //   activeItem{
+    //     item_sharedby: name
+    //   }
+    // })
+
     // this.setState(prev => {
     //   let active = prev.activeItem;
     //   active.item_sharedby = name;
@@ -281,6 +331,17 @@ class AddList extends Component {
     });
     // console.log("final edit ", this.state.activeItem);
   };
+
+  additemhandleChange=e=>{
+    const { activeItem } = this.state;
+    console.log("e.target: ",e.target);
+    console.log("e.target: ",e.target.value);
+    console.log("e.target: ",e.target.name);
+    activeItem[e.target.name] = e.target.value;
+    this.setState({
+      activeItem
+    });
+  }
 
   addItem = e => {
     let item = this.state.activeItem;
@@ -312,6 +373,9 @@ class AddList extends Component {
   };
 
   render() {
+    console.log("this.state.item_sharedby", this.state.item_sharedby);
+    console.log("this.state.order_details.item_sharedby", this.state.order_details);
+
     const {
       items,
       order_details,
@@ -395,10 +459,10 @@ class AddList extends Component {
                         mode="multiple"
                         style={{ width: "100%" }}
                         placeholder="add people"
-                        onChange={name => this.handleSelectChange(name, i)}
+                        onChange={this.handleSelectChange}
                       >
-                        {item_sharedby.map(p => (
-                          <Option key={p.name}>{p.name}</Option>
+                        {this.state.house_people_details.map(p => (
+                          <Option key={p._id} name={p.name} value={p._id}>{p.name}</Option>
                         ))}
                       </Select>
                     </Col>
@@ -533,10 +597,11 @@ class AddList extends Component {
                   ? activeItem.item_sharedby.map(member => member.user_name)
                   : []
               }
+              name={activeItem.item_sharedby}
               onChange={this.handleEditSelectChange}
             >
-              {item_sharedby.map(p => (
-                <Option value={p.name}>{p.name}</Option>
+              {this.state.house_people_details.map(p => (
+              <Option key={p._id} name={p.name} value={p._id}>{p.name}</Option>
               ))}
             </Select>
           </Row>
@@ -555,13 +620,13 @@ class AddList extends Component {
             <Input
               name="item_name"
               value={activeItem.item_name}
-              onChange={e => this.edithandleChange(e)}
+              onChange={e => this.additemhandleChange(e)}
               placeholder="name"
             />
             <Input
               name="item_qty"
               value={activeItem.item_qty}
-              onChange={e => this.edithandleChange(e)}
+              onChange={e => this.additemhandleChange(e)}
               placeholder="quantity"
             />
             <Select
@@ -572,10 +637,10 @@ class AddList extends Component {
                   ? activeItem.item_sharedby.map(member => member.user_name)
                   : []
               }
-              onChange={this.handleEditSelectChange}
+              onChange={this.handleAddItemSelectChange}
             >
-              {item_sharedby.map(p => (
-                <Option value={p.name}>{p.name}</Option>
+              {this.state.house_people_details.map(p => (
+              <Option key={p._id} name={p.name} value={p._id}>{p.name}</Option>
               ))}
             </Select>
           </Row>
