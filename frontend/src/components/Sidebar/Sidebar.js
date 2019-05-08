@@ -9,6 +9,7 @@ import Monthly from "../Monthly/Monthly";
 import AddPeople from "../AddPeople/AddPeople";
 import AddTask from "../AddTask/AddTask";
 import AddList from "../AddList/AddList";
+import Dashboard from "../Dashboard/Dashboard";
 
 const { Header, Content, Sider } = Layout;
 
@@ -47,6 +48,10 @@ class Sidebar extends React.Component {
               <Icon type="pie-chart" />
               <span>Home</span>
             </Menu.Item>
+            <Menu.Item key="dashboard">
+              <Icon type="pie-chart" />
+              <span>Dashboard</span>
+            </Menu.Item>
             <Menu.Item key="oneTime">
               <Icon type="exception" />
               <span>One Time</span>
@@ -82,6 +87,8 @@ class Sidebar extends React.Component {
           <Content style={{ margin: "16px 16px" }}>
             <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
               <Switch>
+                <Route path="/dashboard" component={Dashboard} />
+
                 <Route path="/oneTime" component={OneTime} />
                 <Route path="/daily" component={Daily} />
                 <Route path="/weekly" component={Weekly} />
