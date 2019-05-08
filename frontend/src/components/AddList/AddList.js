@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
+
 import {
   Card,
   DatePicker,
@@ -8,47 +10,122 @@ import {
   Icon,
   Row,
   Modal,
-  Col
+  Col,
+  Collapse,
+  Table
 } from "antd";
-const { RangePicker } = DatePicker;
+const { Column } = Table;
 const { Option } = Select;
+const Panel = Collapse.Panel;
+
 //import "./AddList.css";
 
 class AddList extends Component {
   state = {
-    people: [
-      {
-        name: "Bhaskar Gurram",
-        _id: "1"
-      },
-      {
-        name: "Rohit",
-        _id: "2"
-      },
-      {
-        name: "Sagar",
-        _id: "3"
-      },
+    activeItem: {},
+    item_sharedby: [
       {
         name: "Hrishikesh",
-        _id: "4"
+        _id: "5ccd0f8ed0879970a0d4615b"
       },
       {
-        name: "Vinit",
-        _id: "5"
-      }
-    ],
-    items: [
+        name: "Atul Gutal",
+        _id: "5ccd0f8ed0879970a0d4615d"
+      },
       {
-        name: "",
-        quantity: 0,
-        people: []
+        name: "Pranav Dixit",
+        _id: "5ccd0f8fd0879970a0d46160"
+      },
+      {
+        name: "Rohit Sapkal",
+        _id: "45ccd0f8ed0879970a0d4615e"
+      },
+      {
+        name: "Sagar Bonde",
+        _id: "5ccd0f8ed0879970a0d4615f"
       }
     ],
-    title: "",
+    order_details: [
+      {
+        item_name: "",
+        item_qty: 0,
+        item_sharedby: []
+      }
+    ],
+    list_title: "",
     // list: [{ listName: "" }, [{ name: "" }, { quantity: "" }, { people: [] }]],
-    visible: false
+    visible: false,
+    editItemVisible: false,
+    list: []
+    // list: [
+    //   {
+    //     list_: "",
+    //     listId: "",
+    //     item: [
+
+    //     ]
+    //   }
+    // ],
+    // list: [
+    //   {
+    //     listName: "list 5",
+    //     listId: 1,
+    //     item: [
+    //       {
+    //         itemId: 11,
+    //         name: "mango",
+    //         quantity: 20,
+    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
+    //       },
+    //       {
+    //         itemId: 12,
+
+    //         name: "apple",
+    //         quantity: 20,
+    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     listName: "list 7",
+    //     listId: "2",
+    //     item: [
+    //       {
+    //         itemId: 13,
+
+    //         name: "orange",
+    //         quantity: 20,
+    //         members: [{ name: "Bhaskar Gurram" }, { name: "Rohit" }]
+    //       },
+    //       {
+    //         itemId: 14,
+
+    //         name: "chikku",
+    //         quantity: 20,
+    //         members: [{ name: "Atul Gutal" }, { name: "Sagar" }]
+    //       }
+    //     ]
+    //   }
+    // ]
   };
+
+  componentDidMount() {
+    let home_id = "5ccd0f8ed0879970a0d4615a";
+
+    axios
+      .get(`http://172.20.10.13:5000/list/display/${home_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("get response data ", res.data);
+          this.setState({
+            list: res.data
+          });
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
+  }
 
   // data = {
   //   title: "",
@@ -67,172 +144,408 @@ class AddList extends Component {
     });
   };
 
+  editItemVisibleModal = item => {
+    const { list } = this.state;
+    // console.log(id);
+    // console.log(itemId);
+
+    this.setState({
+      editItemVisible: true,
+      activeItem: item
+    });
+    // console.log("inside");
+    // console.log(this.state.activeItemId);
+  };
+
   handleOk = e => {
-    const { items, title } = this.state;
+    const { items, list_title, order_details } = this.state;
     this.setState({
       visible: false
     });
+    let home_id = "5ccd0f8ed0879970a0d4615a";
+    const data = {
+      home_id,
+      list_title,
+      order_details
+    };
+
+    console.log(data);
+
+    axios
+      .post("http://172.20.10.13:5000/list/create", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
   };
 
   handleCancel = e => {
     this.setState({
-      visible: false
+      visible: false,
+      editItemVisible: false
     });
   };
 
   handleChange = (e, i) => {
     // e.persist();
-    const { items } = this.state;
-    items[i][e.target.name] = e.target.value;
+    const { items, order_details } = this.state;
+    order_details[i][e.target.name] = e.target.value;
     this.setState({
-      items
+      order_details
     });
   };
 
   handleRemove = i => {
-    const { items } = this.state;
-    items.splice(i, 1);
+    const { order_details } = this.state;
+    order_details.splice(i, 1);
     this.setState({
-      items
+      order_details
     });
   };
 
   handleAddItem = () => {
-    let { items } = this.state;
+    let { items, order_details } = this.state;
     const newAddItem = {
-      name: "",
-      quntity: 0,
-      people: []
+      item_name: "",
+      item_qty: 0,
+      item_sharedby: []
     };
-    items.push(newAddItem);
+    console.log("push array", newAddItem);
+    order_details.push(newAddItem);
+    console.log("push array", order_details);
+
     this.setState({
-      items
+      order_details
     });
   };
 
   handleSelectChange = (name, i) => {
     // const id = parseInt(name);
     // console.log(id);
-    const { items, people } = this.state;
+    const { items, people, item_sharedby, order_details } = this.state;
     const selectedIds = [];
-    people.forEach(p => {
-      if (name.indexOf(p.name) !== -1) selectedIds.push(p._id)
-    })
-    items[i]["people"] = selectedIds;
+    item_sharedby.forEach((p, i) => {
+      if (name.indexOf(p.name) !== -1)
+        selectedIds.push({ user_id: p._id, user_name: p.name });
+    });
+    order_details[i]["item_sharedby"] = selectedIds;
     this.setState({
-      items
-    })
+      order_details
+    });
   };
 
-  handlTitleChange = (e) => {
+  handlTitleChange = e => {
     this.setState({
-      title: e.target.value
-    })
-  }
+      list_title: e.target.value
+    });
+  };
+
+  deleteList = list_id => {
+    console.log("delete list id", list_id);
+    const data = {
+      list_id
+    };
+
+    axios
+      .post("http://172.20.10.13:5000/list/delete", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
+  };
+
+  removeItem = item_id => {
+    console.log("delete item id", item_id);
+    const data = {
+      item_id
+    };
+
+    axios
+      .post("http://172.20.10.13:5000/list/item/delete", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+          this.componentDidMount();
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
+  };
+
+  editItem = () => {
+    //console.log("edit item id", this.state.activeItem);
+
+    let data = this.state.activeItem;
+    console.log("final edit ", data);
+
+    axios
+      .post("http://172.20.10.13:5000/list/item/edit", data)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("response data ", res.data);
+
+          this.componentDidMount();
+          this.setState({
+            editItemVisible: false
+          });
+        }
+      })
+      .catch(err => {
+        console.log("view error: ", err);
+      });
+  };
+
+  handleEditSelectChange = name => {
+    console.log(name);
+  };
+
+  edithandleChange = e => {
+    const { activeItem } = this.state;
+    console.log(e.target.value);
+    activeItem[e.target.name] = e.target.value;
+    this.setState({
+      activeItem
+    });
+    // console.log("final edit ", this.state.activeItem);
+  };
+
   render() {
-    const { items, people } = this.state;
+    const {
+      items,
+      order_details,
+      people,
+      item_sharedby,
+      item,
+      members,
+      list,
+      activeItem
+    } = this.state;
+
+    function callback(key) {
+      console.log(key);
+    }
 
     return (
       <Row>
-        <Button style={{ float: "right" }} onClick={this.showModal}>
-          <Icon type="plus" />
-          Add List
-        </Button>
+        <Row>
+          <Button style={{ float: "right" }} onClick={this.showModal}>
+            <Icon type="plus" />
+            Add List
+          </Button>
+          <Modal
+            className="addListModal"
+            title="Add List"
+            visible={this.state.visible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            style={{ height: "500px !important" }}
+            width="700px"
+          >
+            <Row>
+              <Input
+                placeholder="List Title"
+                style={{ marginBottom: "15px" }}
+                // value={list.listName}]
+                name="list_title"
+                onChange={this.handlTitleChange}
+              />
+              {order_details.map((item, i) => (
+                <div style={{ marginTop: "10px" }} key={i}>
+                  <Row>
+                    <Col span={15}>
+                      <Input
+                        prefix={<Icon type="shopping" />}
+                        value={order_details[i].item_name}
+                        name="item_name"
+                        onChange={e => this.handleChange(e, i)}
+                        placeholder="name"
+                        style={{ marginRight: "10px" }}
+                      />
+                    </Col>
+                    <Col span={1} />
+                    <Col span={4}>
+                      <Input
+                        prefix={<Icon type="shopping-cart" />}
+                        value={order_details[i].item_qty}
+                        name="item_qty"
+                        onChange={e => this.handleChange(e, i)}
+                        placeholder="quantity"
+                        style={{ marginRight: "10px" }}
+                      />
+                    </Col>
+                    <Col span={1} />
+
+                    <Col span={3}>
+                      <Button
+                        type="danger"
+                        icon="minus"
+                        ghost
+                        onClick={() => this.handleRemove(i)}
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col
+                      span={20}
+                      style={{ marginBottom: "5px", marginTop: "5px" }}
+                    >
+                      <Select
+                        mode="multiple"
+                        style={{ width: "100%" }}
+                        placeholder="add people"
+                        onChange={name => this.handleSelectChange(name, i)}
+                      >
+                        {item_sharedby.map(p => (
+                          <Option key={p.name}>{p.name}</Option>
+                        ))}
+                      </Select>
+                    </Col>
+                  </Row>
+                </div>
+              ))}
+            </Row>
+
+            <div>
+              <Button
+                icon="shopping"
+                style={{ width: "40%", marginTop: "10px" }}
+                type="default"
+                onClick={this.handleAddItem}
+              >
+                Add More
+              </Button>
+            </div>
+          </Modal>
+        </Row>
+        <Row>
+          <Col span={20}>
+            {list.map((v, index) => (
+              <Collapse
+                onChange={callback}
+                key={index}
+                style={{ marginBottom: "10px" }}
+              >
+                <Panel
+                  header={v.list_title}
+                  key="1"
+                  extra={
+                    <Icon
+                      type="delete"
+                      onClick={() => this.deleteList(v._id)}
+                    />
+                  }
+                >
+                  <Table
+                    bordered
+                    pagination={false}
+                    dataSource={v.order_details}
+                  >
+                    {/* render={(text, record) =>( */}
+                    {/* record.item.map(n => */}
+                    <Column title="Name" dataIndex="item_name" key="name" />
+
+                    <Column
+                      title="Quantity"
+                      dataIndex="item_qty"
+                      key="quantity"
+                    />
+
+                    <Column
+                      title="Members"
+                      key="members"
+                      dataIndex="item_sharedby"
+                      render={(text, record) =>
+                        record.item_sharedby.map(n => <p> {n.user_name}</p>)
+                      }
+                    />
+                    <Column
+                      title="Action"
+                      key="actionEdit"
+                      render={(text, record) => (
+                        <Button
+                          onClick={() => this.editItemVisibleModal(record)}
+                          type="primary"
+                          ghost
+                        >
+                          Edit
+                        </Button>
+                      )}
+                    />
+                    <Column
+                      title="Action"
+                      key="actionRemove"
+                      dataIndex="itemId"
+                      render={(text, record) => (
+                        <Button
+                          onClick={() => this.removeItem(record._id)}
+                          type="danger"
+                          ghost
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    />
+                  </Table>
+                  <Button
+                    style={{ float: "left", margin: "5px" }}
+                    onClick={this.showModal}
+                    onClick={() => this.editItemVisibleModal()}
+                  >
+                    <Icon type="plus" />
+                    Add Item
+                  </Button>
+                </Panel>
+              </Collapse>
+            ))}
+          </Col>
+        </Row>
+
         <Modal
-          className="addListModal"
-          title="Add List"
-          visible={this.state.visible}
-          onOk={this.handleOk}
+          className="editItemModal"
+          title="Edit Item"
+          visible={this.state.editItemVisible}
+          onOk={() => this.editItem()}
           onCancel={this.handleCancel}
           style={{ height: "500px !important" }}
           width="700px"
         >
           <Row>
-            {/* <Input placeholder="Item Name" style={{ marginBottom: "15px" }} />
-            <div style={{ marginBottom: "5px" }}>
-              <Select
-                mode="multiple"
-                style={{ width: "100%" }}
-                placeholder="Please select"
-                onChange={this.handleChange}
-              >
-                {people.map(p => (
-                  <Option key={p.name}>{p.name}</Option>
-                ))}
-              </Select>
-            </div> */}
             <Input
-              placeholder="List Title"
-              style={{ marginBottom: "15px" }}
-              // value={list.listName}]
-              onChange={this.handlTitleChange}
+              name="item_name"
+              value={activeItem.item_name}
+              onChange={e => this.edithandleChange(e)}
             />
-            {items.map((item, i) => (
-              <div style={{ marginTop: "10px" }} key={i}>
-                <Row>
-                  <Col span={15}>
-                    <Input
-                      prefix={<Icon type="shopping" />}
-                      value={items[i].name}
-                      name="name"
-                      onChange={e => this.handleChange(e, i)}
-                      placeholder="name"
-                      style={{ marginRight: "10px" }}
-                    />
-                  </Col>
-                  <Col span={1} />
-                  <Col span={4}>
-                    <Input
-                      prefix={<Icon type="shopping-cart" />}
-                      value={items[i].quantity}
-                      name="quantity"
-                      onChange={e => this.handleChange(e, i)}
-                      placeholder="quantity"
-                      style={{ marginRight: "10px" }}
-                    />
-                  </Col>
-                  <Col span={1} />
-
-                  <Col span={3}>
-                    <Button
-                      type="danger"
-                      icon="minus"
-                      ghost
-                      onClick={() => this.handleRemove(i)}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col
-                    span={20}
-                    style={{ marginBottom: "5px", marginTop: "5px" }}
-                  >
-                    <Select
-                      mode="multiple"
-                      style={{ width: "100%" }}
-                      placeholder="add people"
-                      onChange={(name) => this.handleSelectChange(name, i)}
-                    >
-                      {people.map(p => (
-                        <Option key={p.name}>{p.name}</Option>
-                      ))}
-                    </Select>
-                  </Col>
-                </Row>
-              </div>
-            ))}
-          </Row>
-
-          <div>
-            <Button
-              icon="shopping"
-              style={{ width: "40%", marginTop: "10px" }}
-              type="default"
-              onClick={this.handleAddItem}
+            <Input
+              name="item_qty"
+              value={activeItem.item_qty}
+              onChange={e => this.edithandleChange(e)}
+            />
+            <Select
+              style={{ width: "100%" }}
+              mode="multiple"
+              defaultValue={
+                activeItem.item_sharedby
+                  ? activeItem.item_sharedby.map(member => member.user_name)
+                  : []
+              }
+              onChange={this.handleEditSelectChange}
             >
-              Add More
-            </Button>
-          </div>
+              {item_sharedby.map(p => (
+                <Option value={p.name}>{p.name}</Option>
+              ))}
+            </Select>
+          </Row>
         </Modal>
       </Row>
     );
