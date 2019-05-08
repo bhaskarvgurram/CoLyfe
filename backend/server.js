@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const home_router = require('./routes/home');
 const task_router = require('./routes/task');
+const task_assignment_router = require('./routes/taskAssignment');
 const port = process.env.PORT || 5000;
 const cors = require('cors');
 require('./db');
@@ -20,7 +21,8 @@ app.use(
 );
 
 app.use('/home', home_router);
-app.use('/task', task_router)
+app.use('/task', task_router);
+app.use('/assignment', task_assignment_router);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 module.exports = app;

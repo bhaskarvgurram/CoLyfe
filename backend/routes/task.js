@@ -24,7 +24,7 @@ task_router.post('/create', async (req, res) => {
     let task_name = req.body.task_name;
     let person_ids = req.body.person_ids;
     let rotation_type = req.body.rotation_type; // DAILY, WEEKLY, MONTHLY
-    let home_id = req.body.home_id;
+    let homeId = req.body.homeId;
     let startDate = req.body.startDate;
     console.log(req.body);
     // rotation
@@ -44,12 +44,12 @@ task_router.post('/create', async (req, res) => {
     }
 
     let task = new Task({
-        home_id: home_id,
+        homeId: homeId,
         name: task_name,
         rotationType: rotation_type,
         rotation_day: rotation_day,
         people: person_ids,
-        start: startDate
+        start: startDate,
     });
 
     task.save();
@@ -96,40 +96,22 @@ task_router.post('/assign', async (req, res) => {
 });
 
 
-task_router.post('/mark_complete', async (req, res) => {
-    let task_assignment_id = req.body.taskAssignmentId;
-    let person_id = req.body.personId;
-    console.log('Task id ', task_assignment_id);
-    console.log('Person id ', person_id);
+task_router.post('/clearAll', async (req, res) => {
+    let persons = await Person.find({});
 
-    let task_assignment = await TaskAssignment.findById(task_assignment_id);
-    let person = await Person.findById(person_id);
+    for (var i = 0; i < persons.length; i++) {
+        let update = {
+            'dailyCount': 0,
+            'monthlyCount': 0,
+            'yearlyCount': 0.
+        }
 
-    console.log('Got task assignment ', task_assignment.taskName);
-    console.log('Got person ', person.name);
+        persons[i].taskHistory = Object.assign({}, update);
+        await persons[i].save();
+    }
 
-    // mark the task complete and update the count for task by 1 for that person
-    task_assignment.done = true;
-
-    // let typeToCount = {
-    //     'DAILY': 'dailyCount',
-    //     'MONTHLY': 'monthlyCount',
-    //     'WEEKLY': 'weeklyCount'
-    // }
-
-    // let updateField = typeToCount[task_assignment.rotationType];
-    // console.log('Update field ', updateField);
-    let update = {};
-    update[`${task_assignment.taskId}`] = person.taskHistory[`${task_assignment.taskId}`] + 1;
-    console.log('Update ', update);
-    person.taskHistory = Object.assign({}, person.taskHistory, update)
-    console.log(person.taskHistory);
-    person.save();
-    task_assignment.save();
     res.status(200).send('Success');
-
-
-});
+})
 
 assignTasks = async (task) => {
     // for the task, 
@@ -206,14 +188,15 @@ assignTasks = async (task) => {
 }
 
 assignTaskToPerson = async (task, person_data) => {
-    console.log('Assigning ', person_data.name, ' to task ', task.name);
+    console.log('Assigning ', person_data.name, ' to task ', task.name, ' task');
 
     let assignedTask = new TaskAssignment({
         taskId: task.id,
         personId: person_data.id,
         taskName: task.name,
         personName: person_data.name,
-        rotationType: task.rotationType
+        rotationType: task.rotationType,
+        homeId: task.homeId
     });
 
     let person = await Person.findById(person_data.id);

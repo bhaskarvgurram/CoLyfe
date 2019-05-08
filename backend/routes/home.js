@@ -51,7 +51,7 @@ home_router.post('/', async (req, res) => {
     }
     res.status(200).send({
         "message": "Success",
-        "home_id": home.id
+        "homeId": home.id
     });
 });
 

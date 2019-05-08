@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const TaskSchema = new Schema({
     name: String,
     createdby_id: { type: Schema.Types.ObjectId, ref: 'Person' },
-    home_id: { type: Schema.Types.ObjectId, ref: 'Home' },
+    homeId: { type: Schema.Types.ObjectId, ref: 'Home' },
     rotationType: String,
     start: Date,
     rotationDay: String,
