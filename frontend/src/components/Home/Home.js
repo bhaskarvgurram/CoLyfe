@@ -47,6 +47,11 @@ export default class Home extends Component {
   }
   componentDidMount() {
     console.log("componentDid mount")
+    this.setState({
+      tasks: [],
+      allTasks: [],
+      loading: true
+    })
     this.getData()
   }
   handleMarkComplete = (_id) => {

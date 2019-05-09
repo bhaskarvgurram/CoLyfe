@@ -37,9 +37,9 @@ class Dashboard extends Component {
           ["Atul Gutal", 95],
           ["Hrishikesh Waikar", 95],
           ["Bhaskar Gurram", 95],
-          ["Rohit Shapkal", 90],
-          ["Sagar Bonde", 85],
-          ["Vinit Dholakia", 80],
+          ["Rohit Shapkal", 80],
+          ["Sagar Bonde", 70],
+          ["Vinit Dholakia", 85],
           ["Pranav Dixit", 75]
         ]
       }

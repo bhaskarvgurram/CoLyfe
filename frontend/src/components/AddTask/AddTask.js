@@ -33,7 +33,7 @@ class AddTask extends Component {
 
   }
   data = {
-    rotation_type: "ONCE",
+    rotation_type: "DAILY",
     task_name: "",
     startNow: false,
     person_ids: [],
@@ -125,8 +125,7 @@ class AddTask extends Component {
             </Select>
           </div>
           <div style={{ margin: "15px 0" }}>
-            <Select defaultValue="ONCE" onChange={this.handleDurationSelect} style={{ width: "100%" }}>
-              <Option key="ONCE">Once</Option>
+            <Select defaultValue="DAILY" onChange={this.handleDurationSelect} style={{ width: "100%" }}>
               <Option key="DAILY">Daily</Option>
               <Option key="WEEKLY">Weekly</Option>
               <Option key="MONTHLY">Monthly</Option>
