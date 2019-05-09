@@ -525,7 +525,7 @@ let a=[], b=[];
                       key="members"
                       dataIndex="item_sharedby"
                       render={(text, record) =>
-                        record.item_sharedby.map(n => <p> {n.user_name}</p>)
+                        record.item_sharedby.map(n =>  (n.user_name + ", "))
                       }
                     />
                     <Column
