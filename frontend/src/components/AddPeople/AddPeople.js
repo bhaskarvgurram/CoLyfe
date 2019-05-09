@@ -140,7 +140,7 @@ class AddPeople extends Component {
             title="Action"
             key="action"
             render={(text, record) => (
-              <Button onClick={() => this.handleDelete(record.id)} type="danger" ghost>Remove</Button>
+              <Button onClick={() => this.handleDelete(record.id)} type="danger" >Remove</Button>
             )}
           />
         </Table>

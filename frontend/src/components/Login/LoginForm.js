@@ -45,7 +45,7 @@ class LoginForm extends Component {
             <div style={{ display: "flex", flexDirection: "column", width: "40%", margin: "40px 30%" }}>
                 <Input value={account_name} onChange={this.handleChange} name="account_name" placeholder="Please enter Account name" prefix={<Icon type="home" />} style={{ textAlign: "center", marginBottom: "20px" }} />
                 <Input value={passcode} type="password" onChange={this.handleChange} name="passcode" placeholder="Please enter passcode" prefix={<Icon type="lock" />} style={{ textAlign: "center" }} />
-                <Button type="primary" ghost onClick={this.handleLogin} style={{ marginTop: "20px" }} icon="login">Enter</Button>
+                <Button type="primary" onClick={this.handleLogin} style={{ marginTop: "20px" }} icon="login">Enter</Button>
                 <Divider />
                 <Button onClick={toggleForms} icon="user">Register</Button>
 

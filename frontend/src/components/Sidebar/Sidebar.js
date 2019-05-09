@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Menu, Icon, Typography, message } from "antd";
 import { Switch, Route } from "react-router-dom";
 import Home from "../Home/Home";
+import logo from '../../assets/colyf.png'
 import OneTime from "../OneTime/OneTime";
 import Daily from "../Daily/Daily";
 import Weekly from "../Weekly/Weekly";
@@ -9,6 +10,7 @@ import Monthly from "../Monthly/Monthly";
 import AddPeople from "../AddPeople/AddPeople";
 import AddTask from "../AddTask/AddTask";
 import AddList from "../AddList/AddList";
+import Dashboard from "../Dashboard/Dashboard";
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -19,11 +21,10 @@ class Sidebar extends React.Component {
   };
 
   componentDidMount() {
-    if(!localStorage.getItem("homeId")) {
-      message.error("Please login!")
-      this.props.history.push("/login")
+    if (!localStorage.getItem("homeId")) {
+      message.error("Please login!");
+      this.props.history.push("/login");
     }
-    
   }
 
   onCollapse = collapsed => {
@@ -38,8 +39,8 @@ class Sidebar extends React.Component {
 
   handleLogout = () => {
     localStorage.clear();
-    this.props.history.push("/login")
-  }
+    this.props.history.push("/login");
+  };
   render() {
     const { content } = this.props;
     return (
@@ -56,9 +57,17 @@ class Sidebar extends React.Component {
             mode="inline"
             onClick={this.handleClick}
           >
+            <div style={{display: "flex", justifyContent: "center", alignItems:"center", padding: "20px 0"}}>
+            <img src={logo} style={{width:"50px", height: "50px"}}/>
+            {/* <span>CoLyf</span> */}
+            </div>
             <Menu.Item key="home">
               <Icon type="pie-chart" />
               <span>Home</span>
+            </Menu.Item>
+            <Menu.Item key="dashboard">
+              <Icon type="pie-chart" />
+              <span>Dashboard</span>
             </Menu.Item>
             <Menu.Item key="daily">
               <Icon type="solution" />
@@ -87,10 +96,21 @@ class Sidebar extends React.Component {
           </Menu>
         </Sider>
         <Layout>
-          <Header style={{ background: "#fff", padding: 0 }} >
+          <Header style={{ background: "#FFF", padding: 0 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div style={{ marginLeft: "20px", fontWeight: "600", fontSize: "20px" }}>Home</div>
-              <div style={{marginRight: "20px", cursor:"pointer"}} onClick={this.handleLogout}>
+              <div
+                style={{
+                  marginLeft: "20px",
+                  fontWeight: "600",
+                  fontSize: "20px"
+                }}
+              >
+                Home
+              </div>
+              <div
+                style={{ marginRight: "20px", cursor: "pointer" }}
+                onClick={this.handleLogout}
+              >
                 <Icon type="logout" />
                 &nbsp;Logout
               </div>
@@ -99,6 +119,7 @@ class Sidebar extends React.Component {
           <Content style={{ margin: "16px 16px" }}>
             <div style={{ padding: 24, background: "#fff", minHeight: "90vh" }}>
               <Switch>
+                <Route path="/dashboard" component={Dashboard} />
                 <Route path="/daily" component={Daily} />
                 <Route path="/weekly" component={Weekly} />
                 <Route path="/monthly" component={Monthly} />

@@ -31,3 +31,35 @@
     transform: rotate(360deg);
   }
 } */
+
+
+.ant-menu-dark {
+  background: #BC4639 !important
+}
+.ant-layout-sider {
+  background: #BC4639 !important
+}
+.ant-layout-sider-trigger {
+  background: #5C2018 !important;
+}
+.ant-menu-item-selected {
+  background: #D4A59A !important;
+}
+
+.ant-btn-primary {
+  background: #423b3b !important;
+  border-color: #423b3b !important;
+  color: #fff !important;
+}
+
+.ant-btn-danger {
+  background: #BC4639 !important;
+  border-color: #BC4639 !important;
+  color: #fff !important;
+}
+
+/* .ant-btn-default {
+  background: #F3E0DC !important;
+  border-color: #F3E0DC !important;
+  color: #000;
+} */
