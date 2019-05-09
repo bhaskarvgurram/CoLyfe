@@ -46,6 +46,7 @@ export default class Home extends Component {
       })
   }
   componentDidMount() {
+    console.log("componentDid mount")
     this.getData()
   }
   handleMarkComplete = (_id) => {

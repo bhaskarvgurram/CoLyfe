@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Avatar, Typography, Icon, Card, Select, Button } from 'antd'
+import { Avatar, Typography, Icon, Card, Select, Button, message } from 'antd'
 import "./AssignedTask.css";
 const { Text, Title } = Typography;
 const { Option } = Select;
@@ -17,6 +17,7 @@ class AssignedTask extends Component {
     handleRemind = () => {
         const { personId } = this.props.task;
         console.log(personId)
+        message.success("Reminder was sent successfully!")
     }
    
     render() {
@@ -29,11 +30,11 @@ class AssignedTask extends Component {
                
                 extra={
                     <>
-                        <Button style={{backgroundColor:"#D4A59A", color:"black"}} icon="bell" onClick={this.handleRemind}>Remind</Button> &nbsp;
+                        <Button icon="bell"  type="default" onClick={this.handleRemind}>Remind</Button> &nbsp;
                         {task.done ?
                             <><Icon type="check-circle" /> Completed</>
                             :
-                            <Button type="primary" icon="check-circle" onClick={() => handleMarkComplete(task.id)}>Mark Complete</Button>}
+                            <Button icon="check-circle" type="primary" onClick={() => handleMarkComplete(task.id)}>Mark Complete</Button>}
                     </>
                 }
                 style={{ width: "100%", marginBottom: "20px" }}>

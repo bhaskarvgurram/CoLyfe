@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Menu, Icon, Typography, message } from "antd";
 import { Switch, Route } from "react-router-dom";
 import Home from "../Home/Home";
+import logo from '../../assets/colyf.png'
 import OneTime from "../OneTime/OneTime";
 import Daily from "../Daily/Daily";
 import Weekly from "../Weekly/Weekly";
@@ -56,6 +57,10 @@ class Sidebar extends React.Component {
             mode="inline"
             onClick={this.handleClick}
           >
+            <div style={{display: "flex", justifyContent: "center", alignItems:"center", padding: "20px 0"}}>
+            <img src={logo} style={{width:"50px", height: "50px"}}/>
+            {/* <span>CoLyf</span> */}
+            </div>
             <Menu.Item key="home">
               <Icon type="pie-chart" />
               <span>Home</span>
@@ -91,7 +96,7 @@ class Sidebar extends React.Component {
           </Menu>
         </Sider>
         <Layout>
-          <Header style={{ background: "#fff", padding: 0 }}>
+          <Header style={{ background: "#FFF", padding: 0 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div
                 style={{

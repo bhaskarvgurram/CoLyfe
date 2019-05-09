@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Card } from 'antd';
 import LoginForm from './LoginForm';
+import logo from '../../assets/login.png';
 import RegisterForm from './RegisterForm';
 
 class Login extends Component {
@@ -21,18 +22,17 @@ class Login extends Component {
                 <Row justify="center" type="flex" style={{ marginTop: "50px" }}>
                     <Col xs={20} md={12}>
                         <Card
-                            title="Welcome"
                             style={{ textAlign: "center" }}
                         >
-
+                            <img src={logo} style={{ width: "30%" }} />
                             {
                                 showRegisterForm ?
                                     <RegisterForm
-                                    toggleForms={this.toggleForms}
+                                        toggleForms={this.toggleForms}
                                     />
                                     :
                                     <LoginForm
-                                    toggleForms={this.toggleForms}
+                                        toggleForms={this.toggleForms}
                                     />
                             }
 

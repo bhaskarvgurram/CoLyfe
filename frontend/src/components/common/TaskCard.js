@@ -15,8 +15,8 @@ export default function TaskCard({ task, handleDeleteTask, handleAssignTask }) {
                     </div>
                 </div>
                 <div>
-                    <Button type="primary" ghost style={{ marginRight: "10px" }} onClick={() => handleAssignTask(task.id)}>Assign</Button>
-                    <Button type="danger" ghost onClick={() => handleDeleteTask(task.id)}>Delete</Button>
+                    <Button type="primary"  style={{ marginRight: "10px" }} onClick={() => handleAssignTask(task.id)}>Assign</Button>
+                    <Button type="danger"  onClick={() => handleDeleteTask(task.id)}>Delete</Button>
                 </div>
             </div>
 
