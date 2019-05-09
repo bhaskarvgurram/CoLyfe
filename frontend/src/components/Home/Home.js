@@ -124,7 +124,7 @@ export default class Home extends Component {
 
           </Col>
 
-          <Col offset={4} span={10}>
+          <Col offset={3} span={10}>
             <Title level={4}>All tasks</Title>
             {
               loading ?

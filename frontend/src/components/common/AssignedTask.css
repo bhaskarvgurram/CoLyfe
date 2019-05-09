@@ -1,9 +1,9 @@
 .task_name {
     margin: 0 5px !important;
     display: inline;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
-.task_name:hover {
+/* .task_name:hover {
     text-decoration: underline;
     color:#1890ff;
-}
+} */

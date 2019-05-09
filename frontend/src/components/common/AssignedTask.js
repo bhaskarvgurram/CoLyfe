@@ -48,7 +48,7 @@ class AssignedTask extends Component {
                         }
                     </Select>
                     &nbsp; has been assigned
-                    <Title level={4} className="task_name"
+                    <Title level={4} className="task_name" style={{fontSize:"16px"}}
                         onClick={() => this.handleTaskClick(task.id)}
 
                     >{task.taskName}</Title>
