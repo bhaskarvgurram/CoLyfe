@@ -29,6 +29,7 @@ class LoginForm extends Component {
             .then(response => {
                 console.log(response)
                 localStorage.setItem("homeId", response.data.homeId)
+                localStorage.setItem("homeName", response.data.homeName)
                 localStorage.setItem("personData", JSON.stringify(response.data.personData))
                 message.success("Logged in successfully")
                 this.props.history.push("/")

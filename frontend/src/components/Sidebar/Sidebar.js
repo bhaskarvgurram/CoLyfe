@@ -105,7 +105,7 @@ class Sidebar extends React.Component {
                   fontSize: "20px"
                 }}
               >
-                Home
+                {localStorage.getItem("homeName")}
               </div>
               <div
                 style={{ marginRight: "20px", cursor: "pointer" }}
