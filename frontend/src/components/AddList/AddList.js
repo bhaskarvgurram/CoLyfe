@@ -12,7 +12,8 @@ import {
   Modal,
   Col,
   Collapse,
-  Table
+  Table,
+  message
 } from "antd";
 const { Column } = Table;
 const { Option } = Select;
@@ -142,6 +143,8 @@ class AddList extends Component {
       .then(res => {
         if (res.status === 200) {
           console.log("response data ", res.data);
+    message.success("List was created successfully!")
+          
           this.componentDidMount();
         }
       })
@@ -170,6 +173,7 @@ class AddList extends Component {
   handleRemove = i => {
     const { order_details } = this.state;
     order_details.splice(i, 1);
+    message.success("Item was removed successfully!")
     this.setState({
       order_details
     });
@@ -226,7 +230,7 @@ let a=[], b=[];
     const data = {
       list_id
     };
-
+    message.success("List was deleted successfully!")
     axios
       .post("/list/delete", data)
       .then(res => {
@@ -245,7 +249,7 @@ let a=[], b=[];
     const data = {
       item_id
     };
-
+    message.success("List was removed successfully!")
     axios
       .post("/list/item/delete", data)
       .then(res => {
@@ -446,7 +450,7 @@ let a=[], b=[];
                       <Button
                         type="danger"
                         icon="minus"
-                        ghost
+                        
                         onClick={() => this.handleRemove(i)}
                       />
                     </Col>
@@ -476,7 +480,6 @@ let a=[], b=[];
               <Button
                 icon="shopping"
                 style={{ width: "40%", marginTop: "10px" }}
-                type="default"
                 onClick={this.handleAddItem}
               >
                 Add More
@@ -532,7 +535,7 @@ let a=[], b=[];
                         <Button
                           onClick={() => this.editItemVisibleModal(record)}
                           type="primary"
-                          ghost
+                          
                         >
                           Edit
                         </Button>
@@ -546,7 +549,7 @@ let a=[], b=[];
                         <Button
                           onClick={() => this.removeItem(record._id)}
                           type="danger"
-                          ghost
+                          
                         >
                           Remove
                         </Button>

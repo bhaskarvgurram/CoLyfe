@@ -105,7 +105,7 @@ class AddTask extends Component {
           title="New Task"
           style={{ width: "50%" }}
           actions={[
-            <Button onClick={this.handleSubmit}>Create Task</Button>
+            <Button onClick={this.handleSubmit} type="primary">Create Task</Button>
           ]}
         >
           <div style={{ marginBottom: "15px" }}>
