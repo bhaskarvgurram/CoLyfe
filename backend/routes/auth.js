@@ -50,6 +50,7 @@ auth_router.post('/', async (req, res) => {
     res.status(200).send({
         "message": "Success",
         "homeId": home.id,
+        "homeName": home.name,
         "personData": persons_data
     });
 

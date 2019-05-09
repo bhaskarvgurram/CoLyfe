@@ -13,19 +13,19 @@ home_router.get('/', async (req, res) => {
 
 //get all people in a home
 
-home_router.get('/people', (req, res)=>{
+home_router.get('/people', (req, res) => {
     console.log("req.query.home_id ", req.query.home_id);
     Person.find({
-        house_id:req.query.home_id
+        house_id: req.query.home_id
     })
-    .then(row=>{
-        console.log("people in the house from backend: ", row);
+        .then(row => {
+            console.log("people in the house from backend: ", row);
             res.status(200).send(row);
-    })
-    .catch(err=>{
-        console.log("error in query", err);
-    res.status(400);
-    })
+        })
+        .catch(err => {
+            console.log("error in query", err);
+            res.status(400);
+        })
 })
 
 
@@ -78,7 +78,8 @@ home_router.post('/', async (req, res) => {
     res.status(200).send({
         "message": "Success",
         "homeId": home.id,
-        "personData": person_data
+        "personData": person_data,
+        "homeName": home.name
     });
 });
 
